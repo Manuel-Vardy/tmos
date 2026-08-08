@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import type { DateRange } from "react-day-picker";
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -12,6 +13,7 @@ import {
   PackageSearch,
   X,
   Filter,
+  CalendarDays,
 } from "lucide-react";
 import {
   Area,
@@ -26,10 +28,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { format } from "date-fns";
 
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge, payTone } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   activityRows,
   branchName,
@@ -37,9 +46,7 @@ import {
   currency,
   paymentMixFor,
   productRows,
-  ranges,
   seriesFor,
-  type RangeKey,
 } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
@@ -70,12 +77,71 @@ const branchColors: Record<string, string> = {
   takoradi: "bg-teal-600 text-white border-teal-600",
 };
 
-const rangeColors: Record<string, string> = {
-  "7d": "bg-indigo-600 text-white border-indigo-600",
-  "30d": "bg-sky-600 text-white border-sky-600",
-  "90d": "bg-violet-600 text-white border-violet-600",
-  ytd: "bg-fuchsia-600 text-white border-fuchsia-600",
-};
+function DateRangePicker({
+  value,
+  onChange,
+}: {
+  value: DateRange | undefined;
+  onChange: (range: DateRange | undefined) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const label = value?.from
+    ? value.to
+      ? `${format(value.from, "dd MMM yyyy")} – ${format(value.to, "dd MMM yyyy")}`
+      : format(value.from, "dd MMM yyyy")
+    : "Pick a date range";
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          id="date-range-picker"
+          className={cn(
+            "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium transition-colors shadow-xs",
+            value?.from
+              ? "border-[#22c55e] bg-[#22c55e] text-white"
+              : "border-border hover:bg-secondary text-foreground",
+          )}
+        >
+          <CalendarDays className="size-3.5" />
+          {label}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="range"
+          selected={value}
+          onSelect={onChange}
+          numberOfMonths={2}
+          disabled={{ after: new Date() }}
+          initialFocus
+        />
+        {value?.from && (
+          <div className="border-t border-border p-3 flex justify-end">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                onChange(undefined);
+                setOpen(false);
+              }}
+            >
+              Clear
+            </Button>
+            <Button
+              size="sm"
+              className="ml-2 bg-accent text-accent-foreground hover:bg-accent/85"
+              onClick={() => setOpen(false)}
+            >
+              Apply
+            </Button>
+          </div>
+        )}
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 const statusColors: Record<string, string> = {
   settled: "bg-emerald-600 text-white border-emerald-600",
@@ -160,7 +226,7 @@ const branchMetrics = [
 
 function Dashboard() {
   const [branchId, setBranchId] = useState("all");
-  const [range, setRange] = useState<RangeKey>("7d");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [showSales, setShowSales] = useState(true);
   const [showSettled, setShowSettled] = useState(true);
   const [day, setDay] = useState<string | null>(null);
@@ -170,7 +236,7 @@ function Dashboard() {
   const [branchMetric, setBranchMetric] =
     useState<(typeof branchMetrics)[number]["key"]>("revenue");
 
-  const series = useMemo(() => seriesFor(branchId, range), [branchId, range]);
+  const series = useMemo(() => seriesFor(branchId, "30d"), [branchId]);
   const mix = useMemo(() => paymentMixFor(branchId), [branchId]);
 
   const totals = useMemo(() => {
@@ -212,17 +278,24 @@ function Dashboard() {
 
   const clearAll = () => {
     setBranchId("all");
+    setDateRange(undefined);
     setDay(null);
     setMethod(null);
     setStatus(null);
   };
+
+  const rangeLabel = dateRange?.from
+    ? dateRange.to
+      ? `${format(dateRange.from, "dd MMM")} – ${format(dateRange.to, "dd MMM yyyy")}`
+      : format(dateRange.from, "dd MMM yyyy")
+    : "Last 30 days";
 
   const settledPct = Math.round((totals.settled / Math.max(1, totals.sales)) * 100);
 
   return (
     <AppShell
       title="Organisation dashboard"
-      subtitle={`Sarpong Retail Ltd · ${branchName(branchId)} · ${ranges.find((r) => r.key === range)?.label}`}
+      subtitle={`Sarpong Retail Ltd · ${branchName(branchId)} · ${rangeLabel}`}
       actions={
         <>
           <Button variant="outline" size="sm">
@@ -251,21 +324,7 @@ function Dashboard() {
             ))}
           </div>
           <span className="mx-1 hidden h-5 w-px bg-border sm:block" />
-          <div className="flex flex-wrap gap-1.5">
-            {ranges.map((r) => (
-              <Chip
-                key={r.key}
-                active={range === r.key}
-                onClick={() => {
-                  setRange(r.key);
-                  setDay(null);
-                }}
-                activeClass={rangeColors[r.key]}
-              >
-                {r.label}
-              </Chip>
-            ))}
-          </div>
+          <DateRangePicker value={dateRange} onChange={setDateRange} />
           {filters.length > 0 && (
             <div className="ml-auto flex flex-wrap items-center gap-1.5">
               {filters.map((f) => (
@@ -581,7 +640,7 @@ function Dashboard() {
         <section className="rounded-lg border border-border bg-card">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4">
             <div>
-              <h2 className="text-sm font-semibold">Recent activity</h2>
+              <h2 className="text-lg font-semibold">Recent activity</h2>
               <p className="text-xs text-muted-foreground">
                 {rows.length} of {activityRows.length} events · click a status to filter
               </p>
@@ -603,11 +662,11 @@ function Dashboard() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-base">
               <thead>
                 <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
                   <th className="px-4 py-2.5 font-medium">Reference</th>
-                  <th className="px-4 py-2.5 font-medium">Event</th>
+                  <th className="px-4 py-2.5 font-semibold">Event</th>
                   <th className="px-4 py-2.5 font-medium">Who</th>
                   <th className="px-4 py-2.5 font-medium">Branch</th>
                   <th className="px-4 py-2.5 font-medium">Method</th>
@@ -620,7 +679,7 @@ function Dashboard() {
                 {rows.map((a) => (
                   <tr key={a.id} className="transition-colors hover:bg-secondary/60">
                     <td className="num px-4 py-3 font-medium">{a.id}</td>
-                    <td className="px-4 py-3">{a.what}</td>
+                    <td className="px-4 py-3 font-medium">{a.what}</td>
                     <td className="px-4 py-3 text-muted-foreground">{a.who}</td>
                     <td className="px-4 py-3">
                       <button

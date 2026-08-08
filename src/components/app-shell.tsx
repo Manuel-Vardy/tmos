@@ -13,6 +13,7 @@ import {
   Search,
   ChevronDown,
   Wifi,
+  ShoppingCart,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -30,9 +31,10 @@ import {
 const nav = [
   { group: "Overview", items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard }] },
   {
-    group: "Operate",
+    group: "Operations",
     items: [
       { to: "/pos", label: "Checkout / POS", icon: ScanLine },
+      { to: "/sales", label: "Sales", icon: ShoppingCart },
       { to: "/inventory", label: "Inventory", icon: Boxes },
       { to: "/delivery", label: "Delivery", icon: Truck },
     ],

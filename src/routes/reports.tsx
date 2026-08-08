@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Download, FileSpreadsheet, FileText } from "lucide-react";
+import type { DateRange } from "react-day-picker";
+import { Download, FileSpreadsheet, FileText, CalendarDays } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -12,10 +13,17 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { format } from "date-fns";
 
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { branches, currency, paymentMix, revenueSeries } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
@@ -38,10 +46,80 @@ export const Route = createFileRoute("/reports")({
   component: Reports,
 });
 
-const ranges = ["Today", "7 days", "30 days", "Quarter", "Custom"];
+function DateRangePicker({
+  value,
+  onChange,
+}: {
+  value: DateRange | undefined;
+  onChange: (range: DateRange | undefined) => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const label = value?.from
+    ? value.to
+      ? `${format(value.from, "dd MMM yyyy")} – ${format(value.to, "dd MMM yyyy")}`
+      : format(value.from, "dd MMM yyyy")
+    : "Pick a date range";
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          id="reports-date-range-picker"
+          className={cn(
+            "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium transition-colors shadow-xs",
+            value?.from
+              ? "border-[#22c55e] bg-[#22c55e] text-white"
+              : "border-border hover:bg-secondary text-foreground",
+          )}
+        >
+          <CalendarDays className="size-3.5" />
+          {label}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="range"
+          selected={value}
+          onSelect={onChange}
+          numberOfMonths={2}
+          disabled={{ after: new Date() }}
+          initialFocus
+        />
+        {value?.from && (
+          <div className="border-t border-border p-3 flex justify-end">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => {
+                onChange(undefined);
+                setOpen(false);
+              }}
+            >
+              Clear
+            </Button>
+            <Button
+              size="sm"
+              className="ml-2 bg-accent text-accent-foreground hover:bg-accent/85"
+              onClick={() => setOpen(false)}
+            >
+              Apply
+            </Button>
+          </div>
+        )}
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 function Reports() {
-  const [range, setRange] = useState("7 days");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+
+  const rangeLabel = dateRange?.from
+    ? dateRange.to
+      ? `${format(dateRange.from, "dd MMM")} – ${format(dateRange.to, "dd MMM yyyy")}`
+      : format(dateRange.from, "dd MMM yyyy")
+    : "Last 30 days";
 
   return (
     <AppShell
@@ -63,27 +141,7 @@ function Reports() {
     >
       <div className="space-y-4">
         <div className="flex flex-wrap gap-1.5">
-          {ranges.map((r, i) => {
-            const colors = [
-              "border-indigo-600 bg-indigo-600 text-white",
-              "border-sky-600 bg-sky-600 text-white",
-              "border-violet-600 bg-violet-600 text-white",
-              "border-fuchsia-600 bg-fuchsia-600 text-white",
-            ];
-            const activeColor = colors[i % colors.length];
-            return (
-              <button
-                key={r}
-                onClick={() => setRange(r)}
-                className={cn(
-                  "rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors shadow-xs",
-                  range === r ? activeColor : "border-border hover:bg-secondary text-foreground",
-                )}
-              >
-                {r}
-              </button>
-            );
-          })}
+          <DateRangePicker value={dateRange} onChange={setDateRange} />
         </div>
 
         <section className="grid gap-4 sm:grid-cols-4">
@@ -106,7 +164,7 @@ function Reports() {
         <section className="grid gap-4 xl:grid-cols-2">
           <div className="rounded-lg border border-border bg-card p-4">
             <h2 className="text-sm font-semibold">Settlement trend</h2>
-            <p className="mb-4 text-xs text-muted-foreground">Sold against settled, {range}</p>
+            <p className="mb-4 text-xs text-muted-foreground">Sold against settled, {rangeLabel}</p>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={revenueSeries} margin={{ left: -18, right: 4, top: 4 }}>
@@ -160,7 +218,7 @@ function Reports() {
 
           <div className="rounded-lg border border-border bg-card p-4">
             <h2 className="text-sm font-semibold">Stock turnover by branch</h2>
-            <p className="mb-4 text-xs text-muted-foreground">Value of stock held, {range}</p>
+            <p className="mb-4 text-xs text-muted-foreground">Value of stock held, {rangeLabel}</p>
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={branches.slice(1)} margin={{ left: -18, right: 4 }}>

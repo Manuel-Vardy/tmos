@@ -18,6 +18,7 @@ import { Route as InvoicesRouteImport } from './routes/invoices'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PosRouteImport } from './routes/pos'
 import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as SalesRouteImport } from './routes/sales'
 import { Route as SettingsRouteImport } from './routes/settings'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +66,11 @@ const ReportsRoute = ReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SalesRoute = SalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/pos': typeof PosRoute
   '/reports': typeof ReportsRoute
+  '/sales': typeof SalesRoute
   '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/pos': typeof PosRoute
   '/reports': typeof ReportsRoute
+  '/sales': typeof SalesRoute
   '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/pos': typeof PosRoute
   '/reports': typeof ReportsRoute
+  '/sales': typeof SalesRoute
   '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/pos'
     | '/reports'
+    | '/sales'
     | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/pos'
     | '/reports'
+    | '/sales'
     | '/settings'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/pos'
     | '/reports'
+    | '/sales'
     | '/settings'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PosRoute: typeof PosRoute
   ReportsRoute: typeof ReportsRoute
+  SalesRoute: typeof SalesRoute
   SettingsRoute: typeof SettingsRoute
 }
 
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sales': {
+      id: '/sales'
+      path: '/sales'
+      fullPath: '/sales'
+      preLoaderRoute: typeof SalesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PosRoute: PosRoute,
   ReportsRoute: ReportsRoute,
+  SalesRoute: SalesRoute,
   SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
