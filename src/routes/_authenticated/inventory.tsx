@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import type { DateRange } from "react-day-picker";
 import { Plus, ArrowLeftRight, Link2, Search, Download, Boxes } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -27,7 +29,7 @@ import {
 import { currency, products as seedProducts, branches, type Product } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/inventory")({
+export const Route = createFileRoute("/_authenticated/inventory")({
   head: () => ({
     meta: [
       { title: "Inventory — Trite Merchant OS" },
@@ -235,6 +237,7 @@ function AddProductDialog({ onAdd }: { onAdd: (p: Product) => void }) {
 function Inventory() {
   const [q, setQ] = useState("");
   const [items, setItems] = useState<Product[]>(seedProducts);
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const rows = items.filter((p) =>
     (p.name + p.sku + p.category).toLowerCase().includes(q.toLowerCase()),
@@ -267,6 +270,7 @@ function Inventory() {
                 className="h-9 w-full rounded-md border border-border bg-background pr-3 pl-9 text-sm outline-none focus:border-ring"
               />
             </div>
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
             <Button variant="outline" size="sm">
               <Download className="size-4" /> CSV
             </Button>

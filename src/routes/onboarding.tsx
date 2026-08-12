@@ -1,13 +1,63 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Store, Building2, Check, ArrowRight, ShieldCheck } from "lucide-react";
+
+const SESSION_KEY = "tmos_session_v1";
+function readSession(): { onboardingComplete?: boolean; accountId?: string; institutionType?: string } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed?.version !== 1) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function persistInstitutionType(type: string) {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = JSON.parse(localStorage.getItem(SESSION_KEY) ?? "{}");
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      ...existing,
+      version: 1,
+      institutionType: type,
+    }));
+  } catch { /* silent */ }
+}
+
+function completeOnboarding(institutionType: string | null) {
+  if (typeof window === "undefined") return;
+  try {
+    const existing = JSON.parse(localStorage.getItem(SESSION_KEY) ?? "{}");
+    localStorage.setItem(SESSION_KEY, JSON.stringify({
+      ...existing,
+      version: 1,
+      institutionType: institutionType ?? existing.institutionType,
+      onboardingComplete: true,
+      accountId: existing.accountId ?? "acc-onboarding-001",
+    }));
+  } catch { /* silent */ }
+}
+
+import { Check, ArrowRight, ShieldCheck } from "lucide-react";
 
 import { Wordmark } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { InstitutionSelector } from "@/components/institution-selector";
+import { INSTITUTION_META } from "@/lib/institution-config";
+import type { InstitutionType } from "@/lib/institution-types";
 
 export const Route = createFileRoute("/onboarding")({
+  beforeLoad: () => {
+    const session = readSession();
+    if (session?.accountId && session?.onboardingComplete) {
+      throw redirect({ to: "/" });
+    }
+  },
   head: () => ({
     meta: [
       { title: "Get started — Trite Merchant OS" },
@@ -26,11 +76,33 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
-const steps = ["Business type", "Verification", "First branch", "First product"];
+const steps = ["Institution type", "Verification", "First branch", "First product"];
 
 function Onboarding() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [type, setType] = useState<"single" | "multi">("single");
+  const [selectedInstitutionType, setSelectedInstitutionType] = useState<InstitutionType | null>(null);
+  const [institutionError, setInstitutionError] = useState<string | undefined>(undefined);
+
+  const branchLabel = selectedInstitutionType
+    ? INSTITUTION_META[selectedInstitutionType].branchLabel
+    : "Branch";
+
+  const handleContinue = () => {
+    if (step === 0) {
+      if (!selectedInstitutionType) {
+        setInstitutionError("Please select an institution type to continue.");
+        return;
+      }
+      setInstitutionError(undefined);
+    }
+    setStep((s) => s + 1);
+  };
+
+  const handleEnterDashboard = () => {
+    completeOnboarding(selectedInstitutionType);
+    navigate({ to: "/" });
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -78,37 +150,16 @@ function Onboarding() {
 
           <div className="mt-6 space-y-4">
             {step === 0 && (
-              <div className="grid gap-3 sm:grid-cols-2">
-                {[
-                  {
-                    id: "single" as const,
-                    icon: Store,
-                    title: "Single location",
-                    body: "One shop, one till, one stock list.",
-                  },
-                  {
-                    id: "multi" as const,
-                    icon: Building2,
-                    title: "Multi-branch organisation",
-                    body: "Several outlets rolling up to one HQ view.",
-                  },
-                ].map((o) => (
-                  <button
-                    key={o.id}
-                    onClick={() => setType(o.id)}
-                    className={cn(
-                      "rounded-lg border p-4 text-left transition-colors",
-                      type === o.id
-                        ? "border-accent bg-accent/15"
-                        : "border-border hover:bg-secondary",
-                    )}
-                  >
-                    <o.icon className="size-5" />
-                    <p className="mt-3 font-medium">{o.title}</p>
-                    <p className="mt-1 text-xs text-muted-foreground">{o.body}</p>
-                  </button>
-                ))}
-              </div>
+              <InstitutionSelector
+                value={selectedInstitutionType}
+                onChange={(type) => {
+                  setSelectedInstitutionType(type);
+                  setInstitutionError(undefined);
+                  // Immediately persist to localStorage (Requirement 17.4)
+                  persistInstitutionType(type);
+                }}
+                {...(institutionError != null ? { error: institutionError } : {})}
+              />
             )}
 
             {step === 1 && (
@@ -145,7 +196,7 @@ function Onboarding() {
             {step === 2 && (
               <div className="space-y-3 rounded-lg border border-border bg-card p-5">
                 {[
-                  ["Branch name", "Osu Flagship"],
+                  [`${branchLabel} name`, `${branchLabel} Flagship`],
                   ["City", "Accra"],
                   ["Settlement destination", "GCB · ****4410"],
                 ].map(([l, ph]) => (
@@ -189,15 +240,16 @@ function Onboarding() {
             {step < steps.length - 1 ? (
               <Button
                 className="bg-accent text-accent-foreground hover:bg-accent/85"
-                onClick={() => setStep((s) => s + 1)}
+                onClick={handleContinue}
               >
                 Continue <ArrowRight className="size-4" />
               </Button>
             ) : (
-              <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/85">
-                <Link to="/">
-                  Enter dashboard <ArrowRight className="size-4" />
-                </Link>
+              <Button
+                className="bg-accent text-accent-foreground hover:bg-accent/85"
+                onClick={handleEnterDashboard}
+              >
+                Enter dashboard <ArrowRight className="size-4" />
               </Button>
             )}
             <Link to="/" className="ml-auto text-sm text-muted-foreground hover:text-foreground">

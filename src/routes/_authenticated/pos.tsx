@@ -20,7 +20,7 @@ import { Button } from "@/components/ui/button";
 import { currency, posCatalogue } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/pos")({
+export const Route = createFileRoute("/_authenticated/pos")({
   head: () => ({
     meta: [
       { title: "Checkout & POS — Trite Merchant OS" },

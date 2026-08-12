@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import type { DateRange } from "react-day-picker";
 import {
@@ -13,7 +12,6 @@ import {
   PackageSearch,
   X,
   Filter,
-  CalendarDays,
 } from "lucide-react";
 import {
   Area,
@@ -33,12 +31,7 @@ import { format } from "date-fns";
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge, payTone } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { DateRangePicker } from "@/components/date-range-picker";
 import {
   activityRows,
   branchName,
@@ -50,25 +43,6 @@ import {
 } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Trite Merchant OS — Dashboard" },
-      {
-        name: "description",
-        content:
-          "Organisation-wide revenue, branch comparison, payment mix and stock alerts for African merchants, settled by Trite.",
-      },
-      { property: "og:title", content: "Trite Merchant OS — Dashboard" },
-      {
-        property: "og:description",
-        content: "Sell, stock, invoice, reconcile and get paid from one merchant dashboard.",
-      },
-    ],
-  }),
-  component: Dashboard,
-});
-
 const branchColors: Record<string, string> = {
   all: "bg-emerald-600 text-white border-emerald-600",
   osu: "bg-blue-600 text-white border-blue-600",
@@ -77,71 +51,6 @@ const branchColors: Record<string, string> = {
   takoradi: "bg-teal-600 text-white border-teal-600",
 };
 
-function DateRangePicker({
-  value,
-  onChange,
-}: {
-  value: DateRange | undefined;
-  onChange: (range: DateRange | undefined) => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  const label = value?.from
-    ? value.to
-      ? `${format(value.from, "dd MMM yyyy")} – ${format(value.to, "dd MMM yyyy")}`
-      : format(value.from, "dd MMM yyyy")
-    : "Pick a date range";
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          id="date-range-picker"
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium transition-colors shadow-xs",
-            value?.from
-              ? "border-[#22c55e] bg-[#22c55e] text-white"
-              : "border-border hover:bg-secondary text-foreground",
-          )}
-        >
-          <CalendarDays className="size-3.5" />
-          {label}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="range"
-          selected={value}
-          onSelect={onChange}
-          numberOfMonths={2}
-          disabled={{ after: new Date() }}
-          initialFocus
-        />
-        {value?.from && (
-          <div className="border-t border-border p-3 flex justify-end">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                onChange(undefined);
-                setOpen(false);
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              size="sm"
-              className="ml-2 bg-accent text-accent-foreground hover:bg-accent/85"
-              onClick={() => setOpen(false)}
-            >
-              Apply
-            </Button>
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
-  );
-}
 
 const statusColors: Record<string, string> = {
   settled: "bg-emerald-600 text-white border-emerald-600",
@@ -190,7 +99,7 @@ function Stat({
 }) {
   const up = (delta ?? 0) >= 0;
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
+    <div data-testid="kpi-card" className="rounded-lg border border-border bg-card p-4">
       <div className="flex items-start justify-between">
         <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
         <Icon className="size-4 text-muted-foreground" />
@@ -224,7 +133,7 @@ const branchMetrics = [
   { key: "staff", label: "Staff" },
 ] as const;
 
-function Dashboard() {
+export function RetailDashboard() {
   const [branchId, setBranchId] = useState("all");
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [showSales, setShowSales] = useState(true);
@@ -344,6 +253,7 @@ function Dashboard() {
           )}
         </section>
 
+        {/* KPI cards — 4 cards: Gross Sales, Settled by Trite, Transactions, Stock at Risk */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Stat
             label="Gross sales"

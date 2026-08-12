@@ -1,12 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import type { DateRange } from "react-day-picker";
 import { Truck, Plug, Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge, payTone } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { currency, deliveries, partners } from "@/lib/mos-data";
 
-export const Route = createFileRoute("/delivery")({
+export const Route = createFileRoute("/_authenticated/delivery")({
   head: () => ({
     meta: [
       { title: "Delivery — Trite Merchant OS" },
@@ -33,14 +36,18 @@ const lanes = [
 ] as const;
 
 function Delivery() {
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   return (
     <AppShell
       title="Delivery & fulfilment"
       subtitle="4 active orders · 3 connected partners"
       actions={
-        <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/85">
-          <Plus className="size-4" /> Assign courier
-        </Button>
+        <div className="flex items-center gap-2">
+          <DateRangePicker value={dateRange} onChange={setDateRange} />
+          <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/85">
+            <Plus className="size-4" /> Assign courier
+          </Button>
+        </div>
       }
     >
       <div className="grid gap-4 xl:grid-cols-[1fr_320px]">

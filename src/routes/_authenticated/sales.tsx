@@ -11,7 +11,6 @@ import {
   RotateCcw,
   Filter,
   X,
-  CalendarDays,
 } from "lucide-react";
 import {
   Area,
@@ -27,12 +26,7 @@ import { format } from "date-fns";
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge, payTone } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { DateRangePicker } from "@/components/date-range-picker";
 import {
   activityRows,
   branchName,
@@ -42,21 +36,6 @@ import {
   seriesFor,
 } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
-
-export const Route = createFileRoute("/sales")({
-  head: () => ({
-    meta: [
-      { title: "Trite Merchant OS — Sales" },
-      {
-        name: "description",
-        content:
-          "View all sales transactions across branches, filtered by date range, payment method, and status.",
-      },
-      { property: "og:title", content: "Trite Merchant OS — Sales" },
-    ],
-  }),
-  component: SalesPage,
-});
 
 function Chip({
   active,
@@ -98,71 +77,6 @@ const branchColors: Record<string, string> = {
   takoradi: "bg-teal-600 text-white border-teal-600",
 };
 
-function DateRangePicker({
-  value,
-  onChange,
-}: {
-  value: DateRange | undefined;
-  onChange: (range: DateRange | undefined) => void;
-}) {
-  const [open, setOpen] = useState(false);
-
-  const label = value?.from
-    ? value.to
-      ? `${format(value.from, "dd MMM yyyy")} – ${format(value.to, "dd MMM yyyy")}`
-      : format(value.from, "dd MMM yyyy")
-    : "Pick a date range";
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <button
-          id="date-range-picker"
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium transition-colors shadow-xs",
-            value?.from
-              ? "border-[#22c55e] bg-[#22c55e] text-white"
-              : "border-border hover:bg-secondary text-foreground",
-          )}
-        >
-          <CalendarDays className="size-3.5" />
-          {label}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="range"
-          selected={value}
-          onSelect={onChange}
-          numberOfMonths={2}
-          disabled={{ after: new Date() }}
-          initialFocus
-        />
-        {value?.from && (
-          <div className="border-t border-border p-3 flex justify-end">
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => {
-                onChange(undefined);
-                setOpen(false);
-              }}
-            >
-              Clear
-            </Button>
-            <Button
-              size="sm"
-              className="ml-2 bg-accent text-accent-foreground hover:bg-accent/85"
-              onClick={() => setOpen(false)}
-            >
-              Apply
-            </Button>
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
-  );
-}
 
 const statusColors: Record<string, string> = {
   settled: "bg-emerald-600 text-white border-emerald-600",
@@ -213,7 +127,6 @@ function SalesPage() {
   const [method, setMethod] = useState<string | null>(null);
   const [status, setStatus] = useState<string | null>(null);
 
-  // Use 30d series for chart (mock data; real app would filter by dateRange)
   const series = useMemo(() => seriesFor(branchId, "30d"), [branchId]);
   const mix = useMemo(() => paymentMixFor(branchId), [branchId]);
 
@@ -269,7 +182,6 @@ function SalesPage() {
       }
     >
       <div className="space-y-6">
-        {/* Filter bar */}
         <section className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card p-3">
           <Filter className="size-4 text-muted-foreground" />
           <div className="flex flex-wrap gap-1.5">
@@ -278,7 +190,7 @@ function SalesPage() {
                 key={b.id}
                 active={branchId === b.id}
                 onClick={() => setBranchId(b.id)}
-                activeClass={branchColors[b.id]}
+                {...(branchColors[b.id] ? { activeClass: branchColors[b.id] } : {})}
               >
                 {b.id === "all" ? "All branches" : b.name}
               </Chip>
@@ -305,7 +217,6 @@ function SalesPage() {
           )}
         </section>
 
-        {/* Stat cards */}
         <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatCard
             label="Gross sales"
@@ -336,7 +247,6 @@ function SalesPage() {
           />
         </section>
 
-        {/* Sales trend chart + Payment methods side by side */}
         <section className="grid gap-4 xl:grid-cols-4">
           <div className="rounded-lg border border-border bg-card p-4 xl:col-span-3">
             <div className="mb-4">
@@ -354,44 +264,16 @@ function SalesPage() {
                       <stop offset="100%" stopColor="var(--color-accent)" stopOpacity={0.02} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke="var(--color-border)"
-                    vertical={false}
-                  />
-                  <XAxis
-                    dataKey="day"
-                    tickLine={false}
-                    axisLine={false}
-                    fontSize={12}
-                    stroke="var(--color-muted-foreground)"
-                  />
-                  <YAxis
-                    tickFormatter={(v) => `${Math.round(v / 1000)}k`}
-                    tickLine={false}
-                    axisLine={false}
-                    fontSize={12}
-                    stroke="var(--color-muted-foreground)"
-                  />
-                  <Tooltip
-                    contentStyle={tooltipStyle}
-                    formatter={(v: number) => currency(v)}
-                  />
-                  <Area
-                    name="Sales"
-                    type="monotone"
-                    dataKey="sales"
-                    stroke="var(--color-accent)"
-                    strokeWidth={2}
-                    fill="url(#g-sales-trend)"
-                    activeDot={{ r: 5 }}
-                  />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" vertical={false} />
+                  <XAxis dataKey="day" tickLine={false} axisLine={false} fontSize={12} stroke="var(--color-muted-foreground)" />
+                  <YAxis tickFormatter={(v) => `${Math.round(v / 1000)}k`} tickLine={false} axisLine={false} fontSize={12} stroke="var(--color-muted-foreground)" />
+                  <Tooltip contentStyle={tooltipStyle} formatter={(v: number) => currency(v)} />
+                  <Area name="Sales" type="monotone" dataKey="sales" stroke="var(--color-accent)" strokeWidth={2} fill="url(#g-sales-trend)" activeDot={{ r: 5 }} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
 
-          {/* Payment methods */}
           <div className="rounded-lg border border-border bg-card p-4">
             <h2 className="text-base font-semibold">Payment methods</h2>
             <p className="text-xs text-muted-foreground mb-4">Click to filter transactions</p>
@@ -411,10 +293,7 @@ function SalesPage() {
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-secondary">
                         <div
-                          className={cn(
-                            "h-full rounded-full transition-all",
-                            active ? "bg-foreground" : "bg-accent",
-                          )}
+                          className={cn("h-full rounded-full transition-all", active ? "bg-foreground" : "bg-accent")}
                           style={{ width: `${m.value}%` }}
                         />
                       </div>
@@ -426,7 +305,6 @@ function SalesPage() {
           </div>
         </section>
 
-        {/* Transactions table — full width */}
         <section className="rounded-lg border border-border bg-card">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border p-4">
             <div>
@@ -441,7 +319,7 @@ function SalesPage() {
                   key={s}
                   active={status === s}
                   onClick={() => setStatus(status === s ? null : s)}
-                  activeClass={statusColors[s]}
+                  {...(statusColors[s] ? { activeClass: statusColors[s] } : {})}
                 >
                   {s}
                 </Chip>
@@ -469,29 +347,17 @@ function SalesPage() {
                     <td className="px-4 py-3 font-medium">{a.what}</td>
                     <td className="px-4 py-3 text-muted-foreground">{a.who}</td>
                     <td className="px-4 py-3">
-                      <button
-                        onClick={() => setBranchId(a.branchId)}
-                        className="text-muted-foreground underline-offset-2 hover:underline"
-                      >
+                      <button onClick={() => setBranchId(a.branchId)} className="text-muted-foreground underline-offset-2 hover:underline">
                         {a.where}
                       </button>
                     </td>
                     <td className="px-4 py-3">{a.method}</td>
-                    <td
-                      className={cn(
-                        "num px-4 py-3 text-right font-medium",
-                        a.amount < 0 && "text-destructive",
-                      )}
-                    >
+                    <td className={cn("num px-4 py-3 text-right font-medium", a.amount < 0 && "text-destructive")}>
                       {currency(a.amount)}
                     </td>
                     <td className="px-4 py-3">
-                      <button
-                        onClick={() => setStatus(status === a.status ? null : a.status)}
-                      >
-                        <StatusBadge tone={payTone[a.status] ?? "neutral"}>
-                          {a.status}
-                        </StatusBadge>
+                      <button onClick={() => setStatus(status === a.status ? null : a.status)}>
+                        <StatusBadge tone={payTone[a.status] ?? "neutral"}>{a.status}</StatusBadge>
                       </button>
                     </td>
                     <td className="px-4 py-3 text-right text-muted-foreground">{a.when}</td>
@@ -499,10 +365,7 @@ function SalesPage() {
                 ))}
                 {saleRows.length === 0 && (
                   <tr>
-                    <td
-                      colSpan={8}
-                      className="px-4 py-10 text-center text-sm text-muted-foreground"
-                    >
+                    <td colSpan={8} className="px-4 py-10 text-center text-sm text-muted-foreground">
                       No transactions match these filters.
                     </td>
                   </tr>
@@ -515,3 +378,18 @@ function SalesPage() {
     </AppShell>
   );
 }
+
+// Route exported after SalesPage so TypeScript can resolve the component reference.
+export const Route = createFileRoute("/_authenticated/sales")({
+  head: () => ({
+    meta: [
+      { title: "Trite Merchant OS — Sales" },
+      {
+        name: "description",
+        content: "View all sales transactions across branches, filtered by date range, payment method, and status.",
+      },
+      { property: "og:title", content: "Trite Merchant OS — Sales" },
+    ],
+  }),
+  component: SalesPage,
+});

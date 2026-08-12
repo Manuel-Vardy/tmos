@@ -1,19 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard,
-  ScanLine,
-  Boxes,
   Building2,
-  FileText,
-  ScrollText,
-  Truck,
-  BarChart3,
-  Settings,
   Bell,
   Search,
   ChevronDown,
   Wifi,
-  ShoppingCart,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -27,34 +18,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const nav = [
-  { group: "Overview", items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard }] },
-  {
-    group: "Operations",
-    items: [
-      { to: "/pos", label: "Checkout / POS", icon: ScanLine },
-      { to: "/sales", label: "Sales", icon: ShoppingCart },
-      { to: "/inventory", label: "Inventory", icon: Boxes },
-      { to: "/delivery", label: "Delivery", icon: Truck },
-    ],
-  },
-  {
-    group: "Money",
-    items: [
-      { to: "/invoices", label: "Invoicing", icon: FileText },
-      { to: "/reports", label: "Reports", icon: BarChart3 },
-    ],
-  },
-  {
-    group: "Organisation",
-    items: [
-      { to: "/branches", label: "Branches", icon: Building2 },
-      { to: "/audit", label: "Audit trail", icon: ScrollText },
-      { to: "/settings", label: "Settings", icon: Settings },
-    ],
-  },
-] as const;
+import { useInstitution } from "@/hooks/use-institution";
+import { resolveNavProfile } from "@/lib/nav-profiles";
+// InstitutionSwitcher will be created in task 12.1
+import { InstitutionSwitcher } from "@/components/institution-switcher";
 
 export function Wordmark({ className }: { className?: string }) {
   return (
@@ -112,6 +79,15 @@ export function AppShell({
   children: React.ReactNode;
 }) {
   const pathname = useRouterState({ select: (r) => r.location.pathname });
+  const { institutionType, linkedAccounts, accountId, setInstitution } = useInstitution();
+  const navProfile = resolveNavProfile(institutionType);
+
+  // Mobile bottom-nav: pick items with priority defined, sort ascending, take top 5
+  const bottomNavItems = navProfile
+    .flatMap((g) => g.items)
+    .filter((i) => i.priority !== undefined)
+    .sort((a, b) => (a.priority ?? 99) - (b.priority ?? 99))
+    .slice(0, 5);
 
   return (
     <div className="flex min-h-screen w-full bg-background">
@@ -120,7 +96,7 @@ export function AppShell({
           <Wordmark />
         </div>
         <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-2">
-          {nav.map((section) => (
+          {navProfile.map((section) => (
             <div key={section.group}>
               <p className="px-2 pb-2 text-[10px] font-semibold tracking-[0.14em] uppercase opacity-50">
                 {section.group}
@@ -170,6 +146,15 @@ export function AppShell({
           <div className="flex h-16 items-center gap-3 px-4 lg:px-6">
             <Wordmark className="h-6 lg:hidden" />
             <BranchSwitcher />
+            {linkedAccounts.length > 1 && (
+              <InstitutionSwitcher
+                accounts={linkedAccounts}
+                activeAccountId={accountId ?? ""}
+                onSwitch={(account) =>
+                  setInstitution(account.institutionType, account.accountId)
+                }
+              />
+            )}
             <div className="relative ml-auto hidden max-w-sm flex-1 md:block">
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
@@ -199,13 +184,7 @@ export function AppShell({
         <main className="flex-1 px-4 py-6 lg:px-6">{children}</main>
 
         <nav className="sticky bottom-0 z-30 flex items-center justify-around border-t border-border bg-card px-2 py-1.5 lg:hidden">
-          {[
-            nav[0].items[0],
-            nav[1].items[0],
-            nav[1].items[1],
-            nav[2].items[0],
-            nav[3].items[0],
-          ].map((item) => {
+          {bottomNavItems.map((item) => {
             const active = pathname === item.to;
             return (
               <Link

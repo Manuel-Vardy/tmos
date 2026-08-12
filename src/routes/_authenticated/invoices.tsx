@@ -1,12 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
+import type { DateRange } from "react-day-picker";
 import { Plus, Repeat, Send, Download } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge, payTone } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { currency, invoices } from "@/lib/mos-data";
 
-export const Route = createFileRoute("/invoices")({
+export const Route = createFileRoute("/_authenticated/invoices")({
   head: () => ({
     meta: [
       { title: "Invoicing — Trite Merchant OS" },
@@ -28,6 +31,7 @@ export const Route = createFileRoute("/invoices")({
 const stages = ["draft", "sent", "viewed", "paid", "overdue"] as const;
 
 function Invoices() {
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
   const totalOutstanding = invoices
     .filter((i) => i.status !== "paid" && i.status !== "draft")
     .reduce((s, i) => s + i.amount, 0);
@@ -65,11 +69,14 @@ function Invoices() {
 
         <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
           <section className="rounded-lg border border-border bg-card">
-            <div className="border-b border-border p-4">
-              <h2 className="text-sm font-semibold">All invoices</h2>
-              <p className="text-xs text-muted-foreground">
-                Status updates arrive from the Trite payment engine
-              </p>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border p-4">
+              <div>
+                <h2 className="text-sm font-semibold">All invoices</h2>
+                <p className="text-xs text-muted-foreground">
+                  Status updates arrive from the Trite payment engine
+                </p>
+              </div>
+              <DateRangePicker value={dateRange} onChange={setDateRange} />
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">

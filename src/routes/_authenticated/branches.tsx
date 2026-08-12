@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { branches, currency } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/branches")({
+export const Route = createFileRoute("/_authenticated/branches")({
   head: () => ({
     meta: [
       { title: "Branch management — Trite Merchant OS" },

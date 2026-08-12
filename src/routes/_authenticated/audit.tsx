@@ -1,14 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import type { DateRange } from "react-day-picker";
 import { Search, Download, ShieldCheck } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { StatusBadge } from "@/components/status-badge";
 import { Button } from "@/components/ui/button";
+import { DateRangePicker } from "@/components/date-range-picker";
 import { auditLog } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/audit")({
+export const Route = createFileRoute("/_authenticated/audit")({
   head: () => ({
     meta: [
       { title: "Audit trail — Trite Merchant OS" },
@@ -32,6 +34,7 @@ const types = ["all", "payment", "stock", "refund", "settlement", "permission"];
 function Audit() {
   const [type, setType] = useState("all");
   const [q, setQ] = useState("");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>();
 
   const rows = auditLog.filter(
     (r) =>
@@ -92,6 +95,7 @@ function Audit() {
                   </button>
                 );
               })}
+              <DateRangePicker value={dateRange} onChange={setDateRange} />
             </div>
           </div>
 

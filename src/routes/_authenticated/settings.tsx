@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { branches, roles } from "@/lib/mos-data";
 import { cn } from "@/lib/utils";
 
-export const Route = createFileRoute("/settings")({
+export const Route = createFileRoute("/_authenticated/settings")({
   head: () => ({
     meta: [
       { title: "Settings — Trite Merchant OS" },

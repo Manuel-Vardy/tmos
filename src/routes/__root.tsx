@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { InstitutionProvider } from "@/contexts/institution-context";
+import { useInstitution } from "@/hooks/use-institution";
 
 function NotFoundComponent() {
   return (
@@ -128,14 +130,34 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+/** Blocks rendering of route content until the session has been rehydrated from localStorage.
+ *  Only applies client-side — on the server isRehydrating is always false to avoid SSR mismatch. */
+function RehydrationGate({ children }: { children: ReactNode }) {
+  const { isRehydrating } = useInstitution();
+
+  // During SSR (typeof window === "undefined") always render children immediately.
+  // The provider sets isRehydrating=true only on the client mount effect.
+  if (typeof window !== "undefined" && isRehydrating) {
+    return (
+      <div className="fixed inset-0 animate-pulse bg-muted" aria-hidden="true" />
+    );
+  }
+
+  return <>{children}</>;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
-      <Toaster />
-    </QueryClientProvider>
+    <InstitutionProvider>
+      <QueryClientProvider client={queryClient}>
+        <RehydrationGate>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </RehydrationGate>
+        <Toaster />
+      </QueryClientProvider>
+    </InstitutionProvider>
   );
 }
