@@ -5,7 +5,7 @@ export const INSTITUTION_TYPES = [
   "pharmacy",
   "school",
   "ngo",
-  "salon",
+  // "salon",  // temporarily removed — will be added back later
   "hotel",
   "professional_services",
   "manufacturer",

@@ -5,7 +5,6 @@ import {
   Pill,
   GraduationCap,
   HeartHandshake,
-  Scissors,
   BedDouble,
   Briefcase,
   Factory,
@@ -59,12 +58,7 @@ export const INSTITUTION_META: Record<
     icon: HeartHandshake,
     branchLabel: "Chapter",
   },
-  salon: {
-    label: "Salon / Spa",
-    description: "Hair, beauty, barbershops and spas.",
-    icon: Scissors,
-    branchLabel: "Location",
-  },
+  // salon temporarily removed — will be added back later
   hotel: {
     label: "Hotel",
     description: "Hotels, guesthouses and lodges.",
