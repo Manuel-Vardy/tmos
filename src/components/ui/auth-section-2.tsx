@@ -4,7 +4,7 @@ import { useState, type ReactNode } from "react";
 
 const HERO_IMAGE = "/images/woman-working.jpg";
 const HERO_DESCRIPTION =
-  "From retail shops and restaurants to schools, hotels, and pharmacies — Trite gives every African business one platform to sell, manage stock, send invoices, accept payments, and stay in control.";
+  "From retail shops and restaurants to schools, hotels, and pharmacies. Trite gives every African business one platform to sell, manage stock, send invoices, accept payments, and stay in control.";
 
 
 export interface AuthSectionTwoProps {
@@ -56,7 +56,7 @@ export default function AuthSectionTwo({
               The operating system African businesses run on.
             </h1>
             <p className="text-sm font-normal text-zinc-700 sm:text-base leading-relaxed">
-              Sell, stock, invoice, reconcile and get paid — cash, mobile money, card and stablecoins, across one branch or many.
+              Sell, stock, invoice, reconcile and get paid: cash, mobile money, card and stablecoins, across one branch or many.
             </p>
           </div>
 
