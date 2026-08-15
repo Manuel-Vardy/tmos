@@ -125,10 +125,10 @@ export function DateRangePicker({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition-colors cursor-pointer",
+            "inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all shadow-xs cursor-pointer",
             value?.from
-              ? "border-[#22c55e] bg-white text-[#22c55e] dark:bg-background dark:text-[#22c55e]"
-              : "border-border bg-card text-foreground hover:bg-secondary",
+              ? "bg-[#22c55e]/15 text-[#166534] dark:bg-[#22c55e]/20 dark:text-[#4ade80]"
+              : "bg-card text-foreground hover:bg-secondary",
             className,
           )}
         >
@@ -139,17 +139,34 @@ export function DateRangePicker({
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-[480px] p-0 shadow-lg"
+        className="w-[calc(100vw-2rem)] max-w-[480px] p-0 shadow-lg"
         align="end"
         sideOffset={8}
       >
-        <div className="flex divide-x divide-border">
-          {/* ── Left: Presets ─────────────────────────── */}
-          <div className="w-[180px] flex flex-col py-3">
+        <div className="flex flex-col divide-y divide-border sm:flex-row sm:divide-x sm:divide-y-0">
+          {/* ── Presets ─────────────────────────── */}
+          <div className="flex flex-col py-3 sm:w-[180px]">
             <p className="px-4 pb-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Presets
             </p>
-            <div className="overflow-y-auto max-h-[280px] flex flex-col">
+            {/* On mobile: horizontal scrolling pill row; on sm+: vertical list */}
+            <div className="flex gap-2 overflow-x-auto px-4 pb-1 sm:hidden">
+              {PRESETS.map((preset) => (
+                <button
+                  key={preset.label}
+                  onClick={() => applyPreset(preset)}
+                  className={cn(
+                    "shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap",
+                    activePreset === preset.label
+                      ? "border-[#22c55e] bg-[#22c55e]/10 text-[#22c55e] font-semibold"
+                      : "border-border bg-card text-foreground hover:bg-secondary",
+                  )}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+            <div className="hidden sm:flex sm:flex-col overflow-y-auto max-h-[280px]">
               {PRESETS.map((preset) => (
                 <button
                   key={preset.label}
@@ -167,43 +184,45 @@ export function DateRangePicker({
             </div>
           </div>
 
-          {/* ── Right: Custom Range ────────────────────── */}
-          <div className="flex-1 p-4 flex flex-col gap-4">
+          {/* ── Custom Range ────────────────────── */}
+          <div className="flex flex-1 flex-col gap-3 p-4">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
               Custom Range
             </p>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Start Date
-              </label>
-              <input
-                type="date"
-                value={customStart}
-                max={customEnd || toInputDate(new Date())}
-                onChange={(e) => {
-                  setCustomStart(e.target.value);
-                  setActivePreset("");
-                }}
-                className="h-9 w-full rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[#22c55e]"
-              />
-            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-1 sm:gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  Start Date
+                </label>
+                <input
+                  type="date"
+                  value={customStart}
+                  max={customEnd || toInputDate(new Date())}
+                  onChange={(e) => {
+                    setCustomStart(e.target.value);
+                    setActivePreset("");
+                  }}
+                  className="h-9 w-full rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[#22c55e]"
+                />
+              </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
-                End Date
-              </label>
-              <input
-                type="date"
-                value={customEnd}
-                min={customStart}
-                max={toInputDate(new Date())}
-                onChange={(e) => {
-                  setCustomEnd(e.target.value);
-                  setActivePreset("");
-                }}
-                className="h-9 w-full rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[#22c55e]"
-              />
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  End Date
+                </label>
+                <input
+                  type="date"
+                  value={customEnd}
+                  min={customStart}
+                  max={toInputDate(new Date())}
+                  onChange={(e) => {
+                    setCustomEnd(e.target.value);
+                    setActivePreset("");
+                  }}
+                  className="h-9 w-full rounded-md border border-border bg-card px-3 text-sm text-foreground outline-none focus:border-[#22c55e]"
+                />
+              </div>
             </div>
 
             <button

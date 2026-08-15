@@ -1,5 +1,4 @@
 import { useState } from "react";
-import type { DateRange } from "react-day-picker";
 import { Link } from "@tanstack/react-router";
 import {
   ShoppingCart,
@@ -15,6 +14,7 @@ import {
   PackageSearch,
   CheckCircle2,
   Clock,
+  Bell,
 } from "lucide-react";
 import {
   Area,
@@ -31,7 +31,6 @@ import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { DateRangePicker } from "@/components/date-range-picker";
 import {
   WHOLESALE_CUSTOMERS,
   WHOLESALE_DELIVERY_ROUTES,
@@ -67,18 +66,16 @@ const ORDER_STATUS_STYLES: Record<string, { bg: string; text: string }> = {
   dispatched: { bg: "bg-purple-50 dark:bg-purple-950/40 border-purple-200", text: "text-purple-600 dark:text-purple-400" },
   delivered:  { bg: "bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200", text: "text-emerald-600 dark:text-emerald-400" },
   cancelled:  { bg: "bg-rose-50 dark:bg-rose-950/40 border-rose-200", text: "text-rose-600 dark:text-rose-400" },
+  default:    { bg: "bg-muted", text: "text-muted-foreground" },
 };
 
 export function WholesaleDashboard() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
-
   return (
     <AppShell
       title="Wholesale Dashboard"
       subtitle="Operations overview · Bulk orders, supplier payables, credit receivables & fleet routes"
       actions={
-        <div className="flex flex-wrap items-center gap-2">
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
+        <div className="hidden lg:flex flex-wrap items-center gap-2">
           <Link to="/orders">
             <Button size="sm" className="bg-[#22c55e] text-white hover:bg-[#16a34a]">
               <Plus className="size-4" /> New Bulk Order
@@ -92,8 +89,94 @@ export function WholesaleDashboard() {
         </div>
       }
     >
-      {/* 1. Main KPI Summary Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      {/* Mobile: green hero card + 4 stat cards underneath */}
+      <div className="lg:hidden space-y-3">
+
+        {/* Greeting row — above the hero card */}
+        <div className="flex items-center justify-between px-0.5">
+          <div>
+            <p className="text-xs text-muted-foreground">Good morning 🌤</p>
+            <h2 className="text-xl font-bold leading-tight">Wholesale</h2>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 shadow-xs">
+              <span className="size-1.5 rounded-full bg-emerald-500" /> Live
+            </span>
+            <button className="relative grid size-9 place-items-center rounded-full bg-card shadow-xs border border-border">
+              <Bell className="size-4" />
+              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-red-500" />
+            </button>
+          </div>
+        </div>
+
+        {/* Green hero card — Bulk Order Value */}
+        <div className="relative overflow-hidden rounded-2xl bg-[#22c55e] p-5 text-white shadow-lg">
+          {/* decorative circle */}
+          <div
+            className="pointer-events-none absolute rounded-full bg-white/10"
+            style={{ width: "260px", height: "260px", bottom: "-120px", right: "-60px" }}
+          />
+
+          <div className="relative z-10">
+            <div className="flex items-start justify-between">
+              <p className="text-[11px] font-bold tracking-widest uppercase text-white/80">Bulk Order Value</p>
+              <ShoppingCart className="size-6 opacity-70" />
+            </div>
+            <p className="num mt-2 text-3xl font-extrabold leading-none tracking-tight">
+              {formatGhs(WHOLESALE_SUMMARY.bulkOrderValue)}
+            </p>
+            <p className="mt-2 text-xs text-white/75">
+              +12.4% · this month
+            </p>
+
+            {/* Full-width action buttons matching retail dashboard style */}
+            <div className="mt-4 flex gap-3">
+              <Link to="/orders" className="flex-1">
+                <span className="block rounded-xl bg-[#166534] py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#14532d]">
+                  New Bulk Order
+                </span>
+              </Link>
+              <Link to="/purchasing" className="flex-1">
+                <span className="block rounded-xl bg-white/20 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/30">
+                  Supplier PO
+                </span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* 4 stat cards below the hero */}
+        <div className="grid grid-cols-2 gap-2.5">
+          <KpiCard
+            label="Bulk Order Value"
+            value={formatGhs(WHOLESALE_SUMMARY.bulkOrderValue)}
+            delta={12.4}
+            sub="this month"
+            icon={ShoppingCart}
+          />
+          <KpiCard
+            label="Supplier Payables"
+            value={formatGhs(WHOLESALE_SUMMARY.supplierPayables)}
+            sub="outstanding restock orders"
+            icon={Package}
+          />
+          <KpiCard
+            label="Credit Receivables"
+            value={formatGhs(WHOLESALE_SUMMARY.creditReceivables)}
+            sub={`${WHOLESALE_SUMMARY.overdueCount} accounts overdue`}
+            icon={CreditCard}
+          />
+          <KpiCard
+            label="Active Fleet Routes"
+            value={WHOLESALE_SUMMARY.activeRoutesCount}
+            sub={`${WHOLESALE_SUMMARY.delayedRoutesCount} route delayed`}
+            icon={Truck}
+          />
+        </div>
+      </div>
+
+      {/* Desktop: standard 4-column KPI grid */}
+      <div className="hidden lg:grid grid-cols-4 gap-3">
         <KpiCard
           label="Bulk Order Value"
           value={formatGhs(WHOLESALE_SUMMARY.bulkOrderValue)}
@@ -129,7 +212,6 @@ export function WholesaleDashboard() {
               <h2 className="text-base font-semibold">Wholesale Revenue & Orders Trend</h2>
               <p className="text-xs text-muted-foreground">Weekly gross fulfilled order volume across branches</p>
             </div>
-            <DateRangePicker value={dateRange} onChange={setDateRange} />
           </div>
 
           <div className="h-[240px] w-full">
@@ -256,7 +338,7 @@ export function WholesaleDashboard() {
               </thead>
               <tbody className="divide-y divide-border">
                 {WHOLESALE_ORDERS.slice(0, 5).map((order) => {
-                  const style = ORDER_STATUS_STYLES[order.status] ?? { bg: "bg-muted", color: "text-muted-foreground" };
+                  const style = ORDER_STATUS_STYLES[order.status] ?? ORDER_STATUS_STYLES["default"]!;
                   return (
                     <tr key={order.id} className="hover:bg-muted/30 transition-colors">
                       <td className="px-5 py-3 font-mono text-xs font-semibold">{order.id}</td>

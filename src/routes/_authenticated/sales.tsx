@@ -100,22 +100,22 @@ function StatCard({
 }) {
   const up = (delta ?? 0) >= 0;
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
+    <div className="rounded-lg border border-border bg-card p-3 sm:p-4">
       <div className="flex items-start justify-between">
-        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
-        <Icon className="size-4 text-muted-foreground" />
+        <p className="text-[10px] sm:text-xs font-medium tracking-wide text-muted-foreground uppercase leading-tight pr-1">{label}</p>
+        <Icon className="size-3.5 sm:size-4 shrink-0 text-muted-foreground" />
       </div>
-      <p className="num mt-3 text-2xl font-bold">{value}</p>
-      <div className="mt-2 flex items-center gap-2 text-xs">
+      <p className="num mt-2 text-base sm:text-2xl font-bold leading-tight">{value}</p>
+      <div className="mt-1.5 flex items-center gap-1.5 text-[10px] sm:text-xs">
         {delta !== undefined && (
           <span
             className={`num inline-flex items-center gap-0.5 font-medium ${up ? "text-foreground" : "text-destructive"}`}
           >
-            {up ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
+            {up ? <ArrowUpRight className="size-3 sm:size-3.5" /> : <ArrowDownRight className="size-3 sm:size-3.5" />}
             {Math.abs(delta)}%
           </span>
         )}
-        <span className="text-muted-foreground">{sub}</span>
+        <span className="text-muted-foreground leading-tight">{sub}</span>
       </div>
     </div>
   );
@@ -182,6 +182,112 @@ function SalesPage() {
       }
     >
       <div className="space-y-6">
+        {/* ── Mobile KPI Section (Green hero card + 3 stat cards underneath) ── */}
+        <section className="space-y-3 lg:hidden">
+          {/* Green hero card */}
+          <div className="relative overflow-hidden rounded-2xl bg-[#22c55e] p-5 text-white shadow-xs">
+            {/* Background decorative circle layer (z-0) */}
+            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+              {/* Bottom-right decorative circle */}
+              <div
+                className="absolute rounded-full bg-white/10"
+                style={{ width: "260px", height: "260px", bottom: "-120px", right: "-60px" }}
+              />
+            </div>
+
+            {/* Foreground content layer (z-10) */}
+            <div className="relative z-10">
+              <div className="flex items-start justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">Gross Sales</p>
+                <div className="rounded-lg border border-white/40 bg-white/10 p-1.5 backdrop-blur-xs">
+                  <Banknote className="size-5 text-white" />
+                </div>
+              </div>
+              <p className="num mt-2 text-3xl font-extrabold tracking-tight">{currency(totals.sales)}</p>
+
+              <div className="mt-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">
+                  Settled · {currency(totals.settled)}
+                </p>
+                <p className="mt-0.5 text-xs opacity-70">
+                  {Math.round((totals.settled / Math.max(1, totals.sales)) * 100)}% of gross · {totals.txns.toLocaleString()} transactions
+                </p>
+              </div>
+
+              <div className="mt-4 flex gap-3">
+                <a
+                  href="/sales"
+                  className="flex-1 rounded-xl bg-[#166534] py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#14532d]"
+                >
+                  Sales
+                </a>
+                <a
+                  href="/inventory"
+                  className="flex-1 rounded-xl bg-white/20 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/30"
+                >
+                  Inventory
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* 3 stat cards under Gross Sales on mobile */}
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <StatCard
+              label="Transactions"
+              value={totals.txns.toLocaleString()}
+              delta={5.2}
+              sub="avg GHS 151"
+              icon={ShoppingCart}
+            />
+            <StatCard
+              label="Settled"
+              value={currency(totals.settled)}
+              delta={9.8}
+              sub={`${Math.round((totals.settled / Math.max(1, totals.sales)) * 100)}% of gross`}
+              icon={TrendingUp}
+            />
+            <StatCard
+              label="Refunds issued"
+              value={currency(totals.refunds)}
+              sub="this period"
+              icon={RotateCcw}
+            />
+          </div>
+        </section>
+
+        {/* ── Desktop KPI Section (4 cards in a single row) ── */}
+        <section className="hidden grid-cols-4 gap-4 lg:grid">
+          <StatCard
+            label="Gross sales"
+            value={currency(totals.sales)}
+            delta={12.4}
+            sub="vs previous period"
+            icon={Banknote}
+          />
+          <StatCard
+            label="Transactions"
+            value={totals.txns.toLocaleString()}
+            delta={5.2}
+            sub="avg GHS 151"
+            icon={ShoppingCart}
+          />
+          <StatCard
+            label="Settled"
+            value={currency(totals.settled)}
+            delta={9.8}
+            sub={`${Math.round((totals.settled / Math.max(1, totals.sales)) * 100)}% of gross`}
+            icon={TrendingUp}
+          />
+          <StatCard
+            label="Refunds issued"
+            value={currency(totals.refunds)}
+            sub="this period"
+            icon={RotateCcw}
+          />
+        </section>
+
+        {/* Filter bar */}
         <section className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card p-3">
           <Filter className="size-4 text-muted-foreground" />
           <div className="flex flex-wrap gap-1.5">
@@ -215,36 +321,6 @@ function SalesPage() {
               </Button>
             </div>
           )}
-        </section>
-
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <StatCard
-            label="Gross sales"
-            value={currency(totals.sales)}
-            delta={12.4}
-            sub="vs previous period"
-            icon={Banknote}
-          />
-          <StatCard
-            label="Transactions"
-            value={totals.txns.toLocaleString()}
-            delta={5.2}
-            sub="avg GHS 151"
-            icon={ShoppingCart}
-          />
-          <StatCard
-            label="Settled"
-            value={currency(totals.settled)}
-            delta={9.8}
-            sub={`${Math.round((totals.settled / Math.max(1, totals.sales)) * 100)}% of gross`}
-            icon={TrendingUp}
-          />
-          <StatCard
-            label="Refunds issued"
-            value={currency(totals.refunds)}
-            sub="this period"
-            icon={RotateCcw}
-          />
         </section>
 
         <section className="grid gap-4 xl:grid-cols-4">
@@ -327,7 +403,34 @@ function SalesPage() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-base">
+            {/* ── Mobile: card list ── */}
+            <ul className="divide-y divide-border sm:hidden">
+              {saleRows.map((a) => (
+                <li key={a.id} className="px-4 py-3 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="num text-xs font-semibold text-muted-foreground">{a.id}</span>
+                    <button onClick={() => setStatus(status === a.status ? null : a.status)}>
+                      <StatusBadge tone={payTone[a.status] ?? "neutral"}>{a.status}</StatusBadge>
+                    </button>
+                  </div>
+                  <p className="text-sm font-medium leading-tight">{a.what}</p>
+                  <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                    <span>{a.who}</span>
+                    <span className={cn("num font-semibold", a.amount < 0 ? "text-destructive" : "text-foreground")}>{currency(a.amount)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                    <button onClick={() => setBranchId(a.branchId)} className="underline-offset-2 hover:underline">{a.where}</button>
+                    <span>{a.method} · {a.when}</span>
+                  </div>
+                </li>
+              ))}
+              {saleRows.length === 0 && (
+                <li className="px-4 py-8 text-center text-sm text-muted-foreground">No transactions match these filters.</li>
+              )}
+            </ul>
+
+            {/* ── Desktop: full table ── */}
+            <table className="hidden w-full text-base sm:table">
               <thead>
                 <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
                   <th className="px-4 py-2.5 font-medium">Reference</th>

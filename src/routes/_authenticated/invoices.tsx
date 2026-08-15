@@ -41,25 +41,30 @@ function Invoices() {
       title="Invoicing & receipts"
       subtitle={`${invoices.length} invoices this cycle · ${currency(totalOutstanding)} outstanding`}
       actions={
-        <>
-          <Button variant="outline" size="sm">
-            <Download className="size-4" /> Export
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Button variant="outline" size="sm" className="h-8 px-2.5 sm:h-9 sm:px-3 text-xs sm:text-sm shrink-0">
+            <Download className="size-3.5 sm:size-4" /> Export
           </Button>
-          <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/85">
-            <Plus className="size-4" /> New invoice
+          <Button size="sm" className="h-8 px-2.5 sm:h-9 sm:px-3 text-xs sm:text-sm bg-accent text-accent-foreground hover:bg-accent/85 shrink-0">
+            <Plus className="size-3.5 sm:size-4" />
+            <span className="hidden sm:inline">New invoice</span>
+            <span className="sm:hidden">Invoice</span>
           </Button>
-        </>
+        </div>
       }
     >
       <div className="space-y-4">
-        <section className="grid gap-3 sm:grid-cols-5">
+        {/* KPI stages grid */}
+        <section className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
           {stages.map((s) => {
             const set = invoices.filter((i) => i.status === s);
             return (
-              <div key={s} className="rounded-lg border border-border bg-card p-4">
-                <StatusBadge tone={payTone[s] ?? "neutral"}>{s}</StatusBadge>
-                <p className="num mt-3 text-xl font-bold">{set.length}</p>
-                <p className="num text-xs text-muted-foreground">
+              <div key={s} className="rounded-lg border border-border bg-card p-3 sm:p-4 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <StatusBadge tone={payTone[s] ?? "neutral"}>{s}</StatusBadge>
+                  <span className="num text-base sm:text-xl font-bold">{set.length}</span>
+                </div>
+                <p className="num mt-2 text-xs sm:text-sm font-semibold text-foreground">
                   {currency(set.reduce((a, b) => a + b.amount, 0))}
                 </p>
               </div>
@@ -69,7 +74,7 @@ function Invoices() {
 
         <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
           <section className="rounded-lg border border-border bg-card">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border p-4">
+            <div className="flex flex-col gap-2.5 p-4 border-b border-border sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-sm font-semibold">All invoices</h2>
                 <p className="text-xs text-muted-foreground">
@@ -78,7 +83,51 @@ function Invoices() {
               </div>
               <DateRangePicker value={dateRange} onChange={setDateRange} />
             </div>
-            <div className="overflow-x-auto">
+
+            {/* Mobile Invoices Card List */}
+            <div className="divide-y divide-border sm:hidden">
+              {invoices.map((i) => (
+                <div key={i.id} className="p-3.5 space-y-2.5 transition-colors hover:bg-secondary/40">
+                  {/* Top row: Customer Name & Amount */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-sm leading-tight text-foreground">{i.customer}</p>
+                      <div className="flex items-center gap-1.5 mt-1 text-xs text-muted-foreground">
+                        <span className="font-mono text-[11px] bg-muted px-1.5 py-0.5 rounded border border-border/70 font-medium">
+                          {i.id}
+                        </span>
+                        {i.recurring && (
+                          <span className="inline-flex items-center gap-0.5 text-[10px] text-muted-foreground">
+                            <Repeat className="size-3" /> Auto
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <p className="num text-sm font-bold text-foreground shrink-0">{currency(i.amount)}</p>
+                  </div>
+
+                  {/* Bottom row: Dates & Status / Action */}
+                  <div className="flex items-center justify-between gap-2 pt-1 border-t border-border/50 text-xs">
+                    <div className="text-[11px] text-muted-foreground">
+                      <span>Due: <strong className="text-foreground font-medium">{i.due}</strong></span>
+                      <span className="mx-1.5 opacity-40">·</span>
+                      <span>Issued: {i.issued}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <StatusBadge tone={payTone[i.status] ?? "neutral"}>{i.status}</StatusBadge>
+                      <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
+                        <Send className="size-3" />
+                        <span className="sr-only sm:not-sr-only">Remind</span>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">

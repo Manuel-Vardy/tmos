@@ -57,7 +57,7 @@
 :root {
   --radius: 0.5rem;
 
-  --background: oklch(0.977 0.002 106);
+  --background: #f4f5f7;
   --foreground: oklch(0.213 0.006 17);
 
   --card: oklch(1 0 0);
@@ -84,8 +84,8 @@
   --warning: oklch(0.75 0.15 70);
   --warning-foreground: oklch(0.213 0.006 17);
 
-  --border: oklch(0.912 0.003 106);
-  --input: oklch(0.912 0.003 106);
+  --border: transparent;
+  --input: transparent;
   --ring: #22c55e;
 
   --chart-1: #22c55e;
@@ -123,8 +123,8 @@
   --destructive-foreground: oklch(0.98 0 0);
   --warning: oklch(0.78 0.15 70);
   --warning-foreground: oklch(0.213 0.006 17);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 15%);
+  --border: transparent;
+  --input: transparent;
   --ring: #22c55e;
   --sidebar: oklch(0.16 0.005 17);
   --sidebar-foreground: oklch(0.86 0.004 106);
@@ -132,13 +132,17 @@
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: oklch(0.24 0.006 17);
   --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-border: transparent;
   --sidebar-ring: #22c55e;
 }
 
 @layer base {
   * {
-    border-color: var(--color-border);
+    border-color: transparent;
+  }
+
+  .bg-card {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
   }
 
   body {

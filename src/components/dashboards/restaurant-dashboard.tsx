@@ -1,5 +1,3 @@
-import { useState } from "react";
-import type { DateRange } from "react-day-picker";
 import { Link } from "@tanstack/react-router";
 import {
   Users,
@@ -14,6 +12,7 @@ import {
   CheckCircle2,
   AlertCircle,
   TrendingUp,
+  Bell,
 } from "lucide-react";
 import {
   Bar,
@@ -29,7 +28,6 @@ import { KpiCard } from "@/components/kpi-card";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DateRangePicker } from "@/components/date-range-picker";
 import { cn } from "@/lib/utils";
 import { currency } from "@/lib/mos-data";
 import {
@@ -57,15 +55,12 @@ const tooltipStyle = {
 } as const;
 
 export function RestaurantDashboard() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>();
-
   return (
     <AppShell
       title="Restaurant & Hospitality Operations"
       subtitle="Today's floor plan, live kitchen tickets, menu sales & wastage metrics"
       actions={
-        <div className="flex flex-wrap items-center gap-2">
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
+        <div className="hidden lg:flex flex-wrap items-center gap-2">
           <Link to="/tables">
             <Button size="sm" className="bg-[#22c55e] text-white hover:bg-[#16a34a]">
               <Plus className="size-4" /> Open Table
@@ -85,8 +80,98 @@ export function RestaurantDashboard() {
       }
     >
       <div className="space-y-6">
-        {/* KPI Cards */}
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {/* Mobile: green hero card + 4 stat cards underneath */}
+        <div className="lg:hidden space-y-3">
+          {/* Greeting row */}
+          <div className="flex items-center justify-between px-0.5">
+            <div>
+              <p className="text-xs text-muted-foreground">Good morning 🌤</p>
+              <h2 className="text-xl font-bold leading-tight">Restaurant</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 shadow-xs">
+                <span className="size-1.5 rounded-full bg-emerald-500" /> Live
+              </span>
+              <button className="relative grid size-9 place-items-center rounded-full bg-card shadow-xs border border-border">
+                <Bell className="size-4" />
+                <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-red-500" />
+              </button>
+            </div>
+          </div>
+
+          {/* Green hero card — Occupied Tables */}
+          <div className="relative overflow-hidden rounded-2xl bg-[#22c55e] p-5 text-white shadow-lg">
+            {/* decorative circle */}
+            <div
+              className="pointer-events-none absolute rounded-full bg-white/10"
+              style={{ width: "260px", height: "260px", bottom: "-120px", right: "-60px" }}
+            />
+
+            <div className="relative z-10">
+              <div className="flex items-start justify-between">
+                <p className="text-[11px] font-bold tracking-widest uppercase text-white/80">Occupied Tables</p>
+                <UtensilsCrossed className="size-6 opacity-70" />
+              </div>
+              <p className="num mt-2 text-3xl font-extrabold leading-none tracking-tight">
+                {RESTAURANT_SUMMARY.totalOccupiedTables} / {RESTAURANT_TABLES.length}
+              </p>
+              <div className="mt-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">
+                  Unbilled Tabs · {currency(RESTAURANT_SUMMARY.activeOrderRevenue)}
+                </p>
+                <p className="mt-0.5 text-xs text-white/75">
+                  +12.4% · {RESTAURANT_SUMMARY.totalAvailableTables} tables ready for guests
+                </p>
+              </div>
+
+              {/* Full-width action buttons matching style */}
+              <div className="mt-4 flex gap-3">
+                <Link to="/tables" className="flex-1">
+                  <span className="block rounded-xl bg-[#166534] py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#14532d]">
+                    Open Table
+                  </span>
+                </Link>
+                <Link to="/kitchen" className="flex-1">
+                  <span className="block rounded-xl bg-white/20 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/30">
+                    KDS Display
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* 4 stat cards below the hero */}
+          <div className="grid grid-cols-2 gap-2.5">
+            <KpiCard
+              label="Occupied Tables"
+              value={`${RESTAURANT_SUMMARY.totalOccupiedTables} / ${RESTAURANT_TABLES.length}`}
+              delta={12.4}
+              sub={`${RESTAURANT_SUMMARY.totalAvailableTables} tables ready`}
+              icon={UtensilsCrossed}
+            />
+            <KpiCard
+              label="Unbilled Order Tabs"
+              value={currency(RESTAURANT_SUMMARY.activeOrderRevenue)}
+              sub="open guest checks"
+              icon={Banknote}
+            />
+            <KpiCard
+              label="Kitchen Prep Tickets"
+              value={RESTAURANT_SUMMARY.activeKitchenTickets}
+              sub="tickets on stations"
+              icon={ChefHat}
+            />
+            <KpiCard
+              label="Today Wastage Value"
+              value={currency(RESTAURANT_SUMMARY.todayWastageCost)}
+              sub="spoilage & cook loss"
+              icon={Trash2}
+            />
+          </div>
+        </div>
+
+        {/* Desktop: standard 4-column KPI grid */}
+        <div className="hidden lg:grid grid-cols-4 gap-3">
           <KpiCard
             label="Occupied Tables"
             value={`${RESTAURANT_SUMMARY.totalOccupiedTables} / ${RESTAURANT_TABLES.length}`}
@@ -112,7 +197,7 @@ export function RestaurantDashboard() {
             sub="spoilage & cook loss"
             icon={Trash2}
           />
-        </section>
+        </div>
 
         {/* Live Operations Row */}
         <div className="grid gap-6 lg:grid-cols-2">

@@ -69,10 +69,7 @@ export default function AuthSectionTwo({
             />
           </div>
 
-          {/* Summary description */}
-          <div className="w-full max-w-[480px] rounded-xl border border-dashed border-black/15 bg-white/70 px-4 py-3">
-            <p className="text-xs leading-5 text-zinc-700">{HERO_DESCRIPTION}</p>
-          </div>
+          {/* Summary description removed */}
 
           <p className="mt-4 text-xs text-zinc-500 text-center">
             © Trite Software and Consultancy Services Limited

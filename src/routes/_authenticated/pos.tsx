@@ -8,7 +8,6 @@ import {
   Banknote,
   Trash2,
   QrCode,
-  WifiOff,
   Check,
   Loader2,
   Split,
@@ -55,7 +54,6 @@ function Pos() {
   const [cat, setCat] = useState("All");
   const [method, setMethod] = useState("momo");
   const [phase, setPhase] = useState<"idle" | "pending" | "done">("idle");
-  const [offline, setOffline] = useState(false);
 
   const list = posCatalogue.filter((p) => cat === "All" || p.category === cat);
   const lines = useMemo(
@@ -91,26 +89,11 @@ function Pos() {
       title="Checkout / POS"
       subtitle="Osu Flagship · Till 2 · Ama Boateng"
       actions={
-        <>
-          <Button variant="outline" size="sm" onClick={() => setOffline((o) => !o)}>
-            <WifiOff className="size-4" /> {offline ? "Go online" : "Simulate offline"}
-          </Button>
-          <Button variant="outline" size="sm">
-            <QrCode className="size-4" /> QR at till
-          </Button>
-        </>
+        <Button variant="outline" size="sm">
+          <QrCode className="size-4" /> QR at till
+        </Button>
       }
     >
-      {offline && (
-        <div className="mb-4 flex items-center gap-3 rounded-lg border border-warning/50 bg-warning/15 px-4 py-3 text-sm">
-          <WifiOff className="size-4 shrink-0" />
-          <p>
-            <span className="font-medium">Offline — will sync.</span> Sales are stored on this
-            device and reconcile with Trite automatically once the connection returns.
-          </p>
-        </div>
-      )}
-
       <div className="grid gap-4 xl:grid-cols-[1.6fr_1fr]">
         <section className="rounded-lg border border-border bg-card p-4">
           <div className="mb-4 flex flex-wrap gap-2">
@@ -233,15 +216,29 @@ function Pos() {
                   key={m.id}
                   onClick={() => setMethod(m.id)}
                   className={cn(
-                    "flex flex-col items-start gap-1 rounded-lg border p-2.5 text-left transition-colors",
+                    "flex flex-col items-start gap-1 rounded-lg border p-2.5 text-left transition-all shadow-2xs",
                     method === m.id
-                      ? "border-accent bg-accent/20"
-                      : "border-border hover:bg-secondary",
+                      ? "border-emerald-500 bg-emerald-50 text-emerald-950 dark:bg-emerald-950/50 dark:text-emerald-300 dark:border-emerald-500 shadow-xs"
+                      : "border-border/80 bg-muted/80 text-foreground hover:bg-muted hover:border-border",
                   )}
                 >
-                  <m.icon className="size-4" />
-                  <span className="text-xs leading-tight font-medium">{m.label}</span>
-                  <span className="text-[10px] leading-tight text-muted-foreground">{m.hint}</span>
+                  <m.icon
+                    className={cn(
+                      "size-4",
+                      method === m.id ? "text-emerald-600 dark:text-emerald-400" : "text-muted-foreground",
+                    )}
+                  />
+                  <span className="text-xs leading-tight font-semibold">{m.label}</span>
+                  <span
+                    className={cn(
+                      "text-[10px] leading-tight",
+                      method === m.id
+                        ? "text-emerald-700/90 dark:text-emerald-400/90"
+                        : "text-muted-foreground",
+                    )}
+                  >
+                    {m.hint}
+                  </span>
                 </button>
               ))}
             </div>

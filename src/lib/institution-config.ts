@@ -58,6 +58,11 @@ export const INSTITUTION_META: Record<
     icon: HeartHandshake,
     branchLabel: "Chapter",
   },
+};
+
+// ── Coming-soon dashboards (hidden from signup until ready) ────────────────────
+// Uncomment the corresponding line in institution-types.ts to make these visible.
+export const HIDDEN_INSTITUTION_META = {
   // salon temporarily removed — will be added back later
   hotel: {
     label: "Hotel",

@@ -1,6 +1,4 @@
-﻿import { PiggyBank, Banknote, Users, CheckCircle } from "lucide-react";
-import { useState } from "react";
-import type { DateRange } from "react-day-picker";
+import { PiggyBank, Banknote, Users, CheckCircle } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -15,7 +13,6 @@ import {
 import { KpiCard } from "@/components/kpi-card";
 import { AppShell } from "@/components/app-shell";
 import { Card } from "@/components/ui/card";
-import { DateRangePicker } from "@/components/date-range-picker";
 import { currency } from "@/lib/mos-data";
 import {
   COOP_MEMBERS,
@@ -23,7 +20,7 @@ import {
   COOP_SUMMARY,
 } from "@/lib/cooperative-data";
 
-// ─── Chart Data ───────────────────────────────────────────────────────────────
+// --- Chart Data ---------------------------------------------------------------
 
 const contributionData = [
   { month: "Jan", contributions: 68000, disbursements: 42000 },
@@ -48,17 +45,15 @@ function formatGhs(v: number) {
 }
 
 export function CooperativeDashboard() {
-  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const activeDisbursementsCount = COOP_DISBURSEMENTS.filter((d) => d.status === "Active Repayment").length;
 
   return (
     <AppShell
       title="Cooperative Dashboard"
       subtitle="Financial health overview"
-      actions={<DateRangePicker value={dateRange} onChange={setDateRange} />}
     >
       {/* KPI Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         <KpiCard
           label="Total Savings Pool"
           value={currency(COOP_SUMMARY.totalSavingsPool)}

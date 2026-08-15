@@ -1,4 +1,4 @@
-﻿import { Briefcase, Clock, FileText, Wallet, TrendingUp, AlertCircle, Star, Timer } from "lucide-react";
+import { Briefcase, Clock, FileText, Wallet, TrendingUp, AlertCircle, Star, Timer } from "lucide-react";
 
 import { KpiCard } from "@/components/kpi-card";
 import { AppShell } from "@/components/app-shell";
@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { currency } from "@/lib/mos-data";
 import { PS_PROJECTS, PS_RETAINERS, PS_SUMMARY, type BillingType, type RetainerStatus } from "@/lib/ps-data";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// --- Helpers ------------------------------------------------------------------
 
 const BILLING_STATUS_STYLES: Record<BillingType, string> = {
   "Billable":  "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400",
@@ -23,7 +23,7 @@ const RETAINER_STATUS_STYLES: Record<RetainerStatus, string> = {
   "Expired":         "bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400",
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// --- Component ----------------------------------------------------------------
 
 export function ProfessionalServicesDashboard() {
   const activeProjects = PS_PROJECTS.filter((p) => p.status === "In Progress");
@@ -31,7 +31,7 @@ export function ProfessionalServicesDashboard() {
   return (
     <AppShell title="Professional Services Dashboard" subtitle="Client & project overview">
       {/* KPI Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
         <KpiCard
           label="Active Clients"
           value={PS_SUMMARY.totalClients}

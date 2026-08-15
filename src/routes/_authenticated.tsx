@@ -36,11 +36,6 @@ export const Route = createFileRoute("/_authenticated")({
         search: { redirect: location.pathname },
       });
     }
-
-    // Authenticated but onboarding not yet complete
-    if (!session?.onboardingComplete) {
-      throw redirect({ to: "/onboarding" });
-    }
   },
   component: () => <Outlet />,
 });

@@ -5,13 +5,13 @@ import {
   ArrowDownRight,
   TriangleAlert,
   Plus,
-  Download,
   Banknote,
   Receipt,
   Wallet,
   PackageSearch,
   X,
   Filter,
+  Bell,
 } from "lucide-react";
 import {
   Area,
@@ -44,26 +44,26 @@ import {
 import { cn } from "@/lib/utils";
 
 const branchColors: Record<string, string> = {
-  all: "bg-emerald-600 text-white border-emerald-600",
-  osu: "bg-blue-600 text-white border-blue-600",
-  "east-legon": "bg-purple-600 text-white border-purple-600",
-  kumasi: "bg-amber-600 text-white border-amber-600",
-  takoradi: "bg-teal-600 text-white border-teal-600",
+  all: "bg-emerald-600 text-white",
+  osu: "bg-blue-600 text-white",
+  "east-legon": "bg-purple-600 text-white",
+  kumasi: "bg-amber-600 text-white",
+  takoradi: "bg-teal-600 text-white",
 };
 
 
 const statusColors: Record<string, string> = {
-  settled: "bg-emerald-600 text-white border-emerald-600",
-  confirmed: "bg-emerald-600 text-white border-emerald-600",
-  pending: "bg-amber-500 text-white border-amber-500",
-  failed: "bg-red-600 text-white border-red-600",
+  settled: "bg-emerald-600 text-white",
+  confirmed: "bg-emerald-600 text-white",
+  pending: "bg-amber-500 text-white",
+  failed: "bg-red-600 text-white",
 };
 
 function Chip({
   active,
   onClick,
   children,
-  activeClass = "border-[#22c55e] bg-[#22c55e] text-white",
+  activeClass = "bg-[#22c55e] text-white",
 }: {
   active?: boolean | undefined;
   onClick: () => void;
@@ -75,8 +75,8 @@ function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "rounded-full border px-3 py-1 text-xs font-medium transition-colors shadow-xs",
-        active ? activeClass : "border-border hover:bg-secondary text-foreground",
+        "rounded-full px-3 py-1 text-xs font-medium transition-all shadow-xs cursor-pointer",
+        active ? activeClass : "bg-card hover:bg-secondary text-foreground",
       )}
     >
       {children}
@@ -90,31 +90,42 @@ function Stat({
   delta,
   sub,
   icon: Icon,
+  accentColor = "green",
 }: {
   label: string;
   value: string;
   delta?: number;
   sub: string;
   icon: React.ElementType;
+  accentColor?: "green" | "blue" | "orange" | "red";
 }) {
   const up = (delta ?? 0) >= 0;
+
+  const colorMap = {
+    green:  { arrow: "text-emerald-600", bg: "bg-emerald-50 dark:bg-emerald-950/40", num: "text-emerald-700 dark:text-emerald-400", icon: "text-emerald-500" },
+    blue:   { arrow: "text-blue-600",    bg: "bg-blue-50 dark:bg-blue-950/40",       num: "text-blue-700 dark:text-blue-400",       icon: "text-blue-500" },
+    orange: { arrow: "text-orange-500",  bg: "bg-orange-50 dark:bg-orange-950/40",   num: "text-orange-700 dark:text-orange-400",   icon: "text-orange-500" },
+    red:    { arrow: "text-red-600",     bg: "bg-red-50 dark:bg-red-950/40",         num: "text-red-700 dark:text-red-400",         icon: "text-red-500" },
+  };
+  const colors = colorMap[up ? accentColor : "red"];
+
   return (
-    <div data-testid="kpi-card" className="rounded-lg border border-border bg-card p-4">
+    <div data-testid="kpi-card" className="rounded-xl bg-card p-3 sm:p-4 shadow-xs">
       <div className="flex items-start justify-between">
-        <p className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{label}</p>
-        <Icon className="size-4 text-muted-foreground" />
+        <p className="text-[10px] sm:text-xs font-semibold tracking-wide text-muted-foreground uppercase leading-tight">{label}</p>
+        <div className={cn("grid size-6 sm:size-7 place-items-center rounded-lg", colors.bg)}>
+          <Icon className={cn("size-3.5 sm:size-4 shrink-0", colors.icon)} />
+        </div>
       </div>
-      <p className="num mt-3 text-2xl font-bold">{value}</p>
-      <div className="mt-2 flex items-center gap-2 text-xs">
+      <p className="num mt-2 text-base sm:text-2xl font-bold leading-tight">{value}</p>
+      <div className="mt-1.5 flex items-center gap-1 text-[10px] sm:text-xs">
         {delta !== undefined && (
-          <span
-            className={`num inline-flex items-center gap-0.5 font-medium ${up ? "text-foreground" : "text-destructive"}`}
-          >
-            {up ? <ArrowUpRight className="size-3.5" /> : <ArrowDownRight className="size-3.5" />}
+          <span className={cn("num inline-flex items-center gap-0.5 font-semibold rounded-full px-1.5 py-0.5", colors.bg, colors.num)}>
+            {up ? <ArrowUpRight className="size-3 sm:size-3.5" /> : <ArrowDownRight className="size-3 sm:size-3.5" />}
             {Math.abs(delta)}%
           </span>
         )}
-        <span className="text-muted-foreground">{sub}</span>
+        <span className="text-muted-foreground leading-tight">{sub}</span>
       </div>
     </div>
   );
@@ -206,19 +217,79 @@ export function RetailDashboard() {
       title="Organisation dashboard"
       subtitle={`Sarpong Retail Ltd · ${branchName(branchId)} · ${rangeLabel}`}
       actions={
-        <>
-          <Button variant="outline" size="sm">
-            <Download className="size-4" /> Export
-          </Button>
-          <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/85">
-            <Plus className="size-4" /> New sale
-          </Button>
-        </>
+        <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/85">
+          <Plus className="size-4" /> New sale
+        </Button>
       }
     >
       <div className="space-y-6">
+        {/* ── Mobile hero section ── */}
+        <div className="sm:hidden space-y-4">
+          {/* Greeting row */}
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground">Good morning 🌤</p>
+              <h2 className="text-xl font-bold leading-tight">Efua Sarpong</h2>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 shadow-xs">
+                <span className="size-1.5 rounded-full bg-emerald-500" /> Live
+              </span>
+              <button className="relative grid size-9 place-items-center rounded-full bg-card shadow-xs">
+                <Bell className="size-4" />
+                <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-red-500" />
+              </button>
+            </div>
+          </div>
+
+          {/* Green hero card */}
+          <div className="relative overflow-hidden rounded-2xl bg-[#22c55e] p-5 text-white">
+            {/* Background decorative circle layer (z-0) */}
+            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+              {/* Bottom-right decorative circle */}
+              <div
+                className="absolute rounded-full bg-white/10"
+                style={{ width: "260px", height: "260px", bottom: "-120px", right: "-60px" }}
+              />
+            </div>
+
+            {/* Foreground content layer (z-10) */}
+            <div className="relative z-10">
+              <div className="flex items-start justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">Gross Sales</p>
+                <Banknote className="size-6 opacity-70" />
+              </div>
+              <p className="num mt-2 text-3xl font-extrabold tracking-tight">{currency(totals.sales)}</p>
+
+              <div className="mt-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest opacity-80">
+                  Settled · {currency(totals.settled)}
+                </p>
+                <p className="mt-0.5 text-xs opacity-70">
+                  {settledPct}% of gross · {totals.txns.toLocaleString()} transactions
+                </p>
+              </div>
+
+              <div className="mt-4 flex gap-3">
+                <a
+                  href="/sales"
+                  className="flex-1 rounded-xl bg-[#166534] py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#14532d]"
+                >
+                  Sales
+                </a>
+                <a
+                  href="/inventory"
+                  className="flex-1 rounded-xl bg-white/20 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-white/30"
+                >
+                  Inventory
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Filter bar */}
-        <section className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-card p-3">
+        <section className="flex flex-wrap items-center gap-2 rounded-xl bg-card p-3 shadow-xs">
           <Filter className="size-4 text-muted-foreground" />
           <div className="flex flex-wrap gap-1.5">
             {branches.map((b) => (
@@ -232,7 +303,7 @@ export function RetailDashboard() {
               </Chip>
             ))}
           </div>
-          <span className="mx-1 hidden h-5 w-px bg-border sm:block" />
+          <span className="mx-1 hidden h-5 w-px bg-muted sm:block" />
           <DateRangePicker value={dateRange} onChange={setDateRange} />
           {filters.length > 0 && (
             <div className="ml-auto flex flex-wrap items-center gap-1.5">
@@ -240,7 +311,7 @@ export function RetailDashboard() {
                 <button
                   key={f.label}
                   onClick={f.clear}
-                  className="inline-flex items-center gap-1 rounded-full border border-accent bg-accent/20 px-2.5 py-1 text-xs font-medium"
+                  className="inline-flex items-center gap-1 rounded-full bg-accent/20 px-2.5 py-1 text-xs font-medium"
                 >
                   {f.label}
                   <X className="size-3" />
@@ -254,13 +325,14 @@ export function RetailDashboard() {
         </section>
 
         {/* KPI cards — 4 cards: Gross Sales, Settled by Trite, Transactions, Stock at Risk */}
-        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <section className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           <Stat
             label="Gross sales"
             value={currency(totals.sales)}
             delta={12.4}
             sub={day ? `on ${day}` : "vs previous period"}
             icon={Banknote}
+            accentColor="green"
           />
           <Stat
             label="Settled by Trite"
@@ -268,6 +340,7 @@ export function RetailDashboard() {
             delta={9.8}
             sub={`${settledPct}% of gross`}
             icon={Wallet}
+            accentColor="blue"
           />
           <Stat
             label="Transactions"
@@ -275,12 +348,14 @@ export function RetailDashboard() {
             delta={5.2}
             sub="avg GHS 151"
             icon={Receipt}
+            accentColor="orange"
           />
           <Stat
             label="Stock at risk"
             value={`${lowStock.length} SKUs`}
             sub="below threshold"
             icon={PackageSearch}
+            accentColor="red"
           />
         </section>
 
@@ -572,7 +647,41 @@ export function RetailDashboard() {
             </div>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-base">
+            {/* ── Mobile: card list ── */}
+            <ul className="divide-y divide-border sm:hidden">
+              {rows.map((a) => (
+                <li key={a.id} className="px-4 py-3 space-y-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="num text-xs font-semibold text-muted-foreground">{a.id}</span>
+                    <button onClick={() => setStatus(status === a.status ? null : a.status)}>
+                      <StatusBadge tone={payTone[a.status] ?? "neutral"}>{a.status}</StatusBadge>
+                    </button>
+                  </div>
+                  <p className="text-sm font-medium leading-tight">{a.what}</p>
+                  <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+                    <span>{a.who}</span>
+                    <span className="num font-semibold text-foreground">{currency(a.amount)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+                    <button
+                      onClick={() => setBranchId(a.branchId)}
+                      className="underline-offset-2 hover:underline"
+                    >
+                      {a.where}
+                    </button>
+                    <span>{a.method} · {a.when}</span>
+                  </div>
+                </li>
+              ))}
+              {rows.length === 0 && (
+                <li className="px-4 py-8 text-center text-sm text-muted-foreground">
+                  No events match these filters.
+                </li>
+              )}
+            </ul>
+
+            {/* ── Desktop: full table ── */}
+            <table className="hidden w-full text-base sm:table">
               <thead>
                 <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">
                   <th className="px-4 py-2.5 font-medium">Reference</th>

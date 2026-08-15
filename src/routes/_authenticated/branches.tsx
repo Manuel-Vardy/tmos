@@ -36,14 +36,14 @@ function Branches() {
       title="Branch management"
       subtitle="4 branches · 34 staff · Sarpong Retail Ltd"
       actions={
-        <>
+        <div className="flex flex-wrap items-center gap-2">
           <div className="flex rounded-md border border-border p-0.5">
             {(["rollup", "per-branch"] as const).map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v)}
                 className={cn(
-                  "rounded px-3 py-1.5 text-xs font-medium transition-colors",
+                  "rounded px-2.5 sm:px-3 py-1.5 text-xs font-medium transition-colors",
                   view === v
                     ? v === "rollup"
                       ? "bg-emerald-600 text-white"
@@ -55,10 +55,12 @@ function Branches() {
               </button>
             ))}
           </div>
-          <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/85">
-            <Plus className="size-4" /> Add branch
+          <Button size="sm" className="h-8 px-2.5 sm:h-9 sm:px-3 text-xs sm:text-sm bg-accent text-accent-foreground hover:bg-accent/85 shrink-0">
+            <Plus className="size-3.5 sm:size-4" />
+            <span className="hidden sm:inline">Add branch</span>
+            <span className="sm:hidden">Add</span>
           </Button>
-        </>
+        </div>
       }
     >
       <div className="space-y-4">
@@ -82,31 +84,34 @@ function Branches() {
             const up = b.growth >= 0;
             return (
               <div key={b.id} className="rounded-lg border border-border bg-card p-4">
+                {/* Header: name + status badge */}
                 <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h2 className="font-display text-base font-semibold">{b.name}</h2>
-                    <p className="text-xs text-muted-foreground">{b.city}</p>
+                  <div className="min-w-0">
+                    <h2 className="font-display text-base font-semibold leading-tight truncate">{b.name}</h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">{b.city}</p>
                   </div>
-                  <StatusBadge tone={up ? "good" : "warn"}>
+                  <StatusBadge tone={up ? "good" : "warn"} className="shrink-0">
                     {up ? "Growing" : "Declining"}
                   </StatusBadge>
                 </div>
 
-                <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
-                  <div>
+                {/* Stats — 2-col on mobile, 3-col on sm+ */}
+                <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-x-3 gap-y-3 text-sm">
+                  <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">Revenue</p>
-                    <p className="num font-semibold">{currency(b.revenue)}</p>
+                    <p className="num font-semibold text-sm break-all">{currency(b.revenue)}</p>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-xs text-muted-foreground">Stock value</p>
-                    <p className="num font-semibold">{currency(b.stockValue)}</p>
+                    <p className="num font-semibold text-sm break-all">{currency(b.stockValue)}</p>
                   </div>
-                  <div>
+                  {/* Week-on-week: full-width on mobile (col-span-2), auto on sm+ */}
+                  <div className="col-span-2 sm:col-span-1 flex sm:block items-center gap-3">
                     <p className="text-xs text-muted-foreground">Week on week</p>
                     <p
                       className={cn(
                         "num inline-flex items-center gap-0.5 font-semibold",
-                        !up && "text-destructive",
+                        up ? "text-accent" : "text-destructive",
                       )}
                     >
                       {up ? (
@@ -119,20 +124,23 @@ function Branches() {
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-3 text-xs text-muted-foreground">
+                {/* Staff & settlement */}
+                <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-border pt-3 text-xs text-muted-foreground">
                   <span className="inline-flex items-center gap-1.5">
-                    <Users className="size-3.5" /> {b.staff} staff assigned
+                    <Users className="size-3.5 shrink-0" /> {b.staff} staff assigned
                   </span>
-                  <span className="inline-flex items-center gap-1.5">
-                    <Wallet className="size-3.5" /> {b.settlement}
+                  <span className="inline-flex items-center gap-1.5 min-w-0">
+                    <Wallet className="size-3.5 shrink-0" />
+                    <span className="truncate">{b.settlement}</span>
                   </span>
                 </div>
 
+                {/* Action buttons */}
                 <div className="mt-3 flex gap-2">
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button variant="outline" size="sm" className="flex-1 text-xs sm:text-sm">
                     Manage staff
                   </Button>
-                  <Button variant="outline" size="sm" className="flex-1">
+                  <Button variant="outline" size="sm" className="flex-1 text-xs sm:text-sm">
                     Branch dashboard
                   </Button>
                 </div>

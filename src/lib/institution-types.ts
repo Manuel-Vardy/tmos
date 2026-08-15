@@ -5,11 +5,11 @@ export const INSTITUTION_TYPES = [
   "pharmacy",
   "school",
   "ngo",
-  // "salon",  // temporarily removed — will be added back later
-  "hotel",
-  "professional_services",
-  "manufacturer",
-  "cooperative",
+  // "salon",              // coming soon — will be enabled later
+  // "hotel",             // coming soon — will be enabled later
+  // "professional_services", // coming soon — will be enabled later
+  // "manufacturer",     // coming soon — will be enabled later
+  // "cooperative",      // coming soon — will be enabled later
 ] as const;
 
 export type InstitutionType = (typeof INSTITUTION_TYPES)[number];

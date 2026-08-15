@@ -138,69 +138,71 @@ function PaymentsPage() {
           <Button
             size="sm"
             onClick={() => setIsNewPaymentOpen(true)}
-            className="bg-[#22c55e] text-white hover:bg-[#16a34a]"
+            className="h-8 px-2.5 sm:h-9 sm:px-3 text-xs sm:text-sm bg-[#22c55e] text-white hover:bg-[#16a34a] shrink-0"
           >
-            <Plus className="size-4" /> Process Payment
+            <Plus className="size-3.5 sm:size-4" />
+            <span className="hidden sm:inline">Process Payment</span>
+            <span className="sm:hidden">New Payment</span>
           </Button>
         </div>
       }
     >
       {/* Stat Cards */}
-      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-border bg-card p-4">
+      <div className="mb-5 grid grid-cols-2 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Total Payments</p>
-            <span className="rounded-full bg-emerald-50 p-2 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-              <CreditCard className="size-4" />
+            <span className="rounded-full bg-emerald-50 p-1.5 sm:p-2 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+              <CreditCard className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
             {currency(paymentsList.reduce((a, p) => a + p.amountPaid, 0))}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">Settled today</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Card Settlements</p>
-            <span className="rounded-full bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
-              <CreditCard className="size-4" />
+            <span className="rounded-full bg-blue-50 p-1.5 sm:p-2 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+              <CreditCard className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
             {paymentsList.filter((p) => p.paymentMethod === "Visa / Mastercard").length} folios
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">Visa / Mastercard POS</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Corporate Accounts</p>
-            <span className="rounded-full bg-purple-50 p-2 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400">
-              <Landmark className="size-4" />
+            <span className="rounded-full bg-purple-50 p-1.5 sm:p-2 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400">
+              <Landmark className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-purple-600 dark:text-purple-400">
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-purple-600 dark:text-purple-400">
             {paymentsList.filter((p) => p.paymentMethod === "Corporate Bill").length} accounts
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">Invoiced to corporate</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Folios Issued</p>
-            <span className="rounded-full bg-slate-100 p-2 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-              <FileSpreadsheet className="size-4" />
+            <span className="rounded-full bg-slate-100 p-1.5 sm:p-2 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <FileSpreadsheet className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold">{paymentsList.length}</p>
+          <p className="mt-2 text-xl sm:text-2xl font-bold">{paymentsList.length}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">Receipts logged</p>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="mb-4 space-y-2.5">
+        <div className="relative w-full">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={search}
@@ -210,10 +212,11 @@ function PaymentsPage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        {/* Filter pills & controls — horizontally scrollable */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
           <button
             onClick={() => setMethodFilter("all")}
-            className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+            className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
               methodFilter === "all"
                 ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
                 : "bg-secondary text-muted-foreground hover:bg-border"
@@ -227,7 +230,7 @@ function PaymentsPage() {
               <button
                 key={m}
                 onClick={() => setMethodFilter(m)}
-                className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+                className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
                   methodFilter === m ? cfg.activePill : "bg-secondary text-muted-foreground hover:bg-border"
                 }`}
               >
@@ -237,7 +240,7 @@ function PaymentsPage() {
           })}
 
           {/* View Toggle */}
-          <div className="flex items-center rounded-lg border border-border bg-card p-0.5 ml-1">
+          <div className="shrink-0 flex items-center rounded-lg border border-border bg-card p-0.5">
             <button
               onClick={() => setViewMode("table")}
               className={`p-1.5 rounded-md text-xs transition-colors ${
@@ -258,59 +261,69 @@ function PaymentsPage() {
             </button>
           </div>
 
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
+          <div className="shrink-0">
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
+          </div>
         </div>
       </div>
 
       {/* Main Content Area: Table vs Cards */}
       {viewMode === "table" ? (
-        <div className="overflow-hidden rounded-xl border border-border bg-card">
-          <table className="w-full text-sm">
+        <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-2xs">
+          <table className="w-full min-w-[780px] text-sm">
             <thead>
               <tr className="border-b border-border bg-secondary/40 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <th className="px-4 py-3">Folio No</th>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3">Guest Name</th>
-                <th className="px-4 py-3">Room #</th>
-                <th className="px-4 py-3">Description</th>
-                <th className="px-4 py-3">Payment Method</th>
-                <th className="px-4 py-3 font-bold">Amount Paid</th>
-                <th className="hidden px-4 py-3 md:table-cell">Received By</th>
-                <th className="px-4 py-3 text-right">Action</th>
+                <th className="px-4 py-3 whitespace-nowrap">Folio No</th>
+                <th className="px-4 py-3 whitespace-nowrap">Date</th>
+                <th className="px-4 py-3 whitespace-nowrap">Guest Name</th>
+                <th className="px-4 py-3 whitespace-nowrap">Room #</th>
+                <th className="px-4 py-3 whitespace-nowrap">Description</th>
+                <th className="px-4 py-3 whitespace-nowrap">Payment Method</th>
+                <th className="px-4 py-3 font-bold whitespace-nowrap">Amount Paid</th>
+                <th className="hidden px-4 py-3 md:table-cell whitespace-nowrap">Received By</th>
+                <th className="px-4 py-3 text-right whitespace-nowrap">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filtered.map((pay) => {
-                const cfg = METHOD_CONFIG[pay.paymentMethod];
-                const Icon = cfg.icon;
-                return (
-                  <tr key={pay.id} className="transition-colors hover:bg-secondary/30">
-                    <td className="px-4 py-3 font-mono text-xs font-semibold text-foreground">{pay.folioNo}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{pay.date}</td>
-                    <td className="px-4 py-3 font-semibold text-foreground">{pay.guestName}</td>
-                    <td className="px-4 py-3 font-medium text-foreground">{pay.roomNumber}</td>
-                    <td className="px-4 py-3 text-xs text-muted-foreground">{pay.itemDescription}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs ${cfg.bg} ${cfg.color}`}>
-                        <Icon className="size-3" />
-                        {pay.paymentMethod}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 font-bold text-emerald-600 dark:text-emerald-400">{currency(pay.amountPaid)}</td>
-                    <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">{pay.receivedBy}</td>
-                    <td className="px-4 py-3 text-right">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setSelectedFolio(pay)}
-                        className="text-xs h-7"
-                      >
-                        <Printer className="size-3" /> View Folio
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="py-10 text-center text-sm text-muted-foreground">
+                    No payment folios match your search.
+                  </td>
+                </tr>
+              ) : (
+                filtered.map((pay) => {
+                  const cfg = METHOD_CONFIG[pay.paymentMethod];
+                  const Icon = cfg.icon;
+                  return (
+                    <tr key={pay.id} className="transition-colors hover:bg-secondary/30">
+                      <td className="px-4 py-3 font-mono text-xs font-semibold text-foreground whitespace-nowrap">{pay.folioNo}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{pay.date}</td>
+                      <td className="px-4 py-3 font-semibold text-foreground whitespace-nowrap">{pay.guestName}</td>
+                      <td className="px-4 py-3 font-medium text-foreground whitespace-nowrap">{pay.roomNumber}</td>
+                      <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">{pay.itemDescription}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs ${cfg.bg} ${cfg.color}`}>
+                          <Icon className="size-3" />
+                          {pay.paymentMethod}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 font-bold text-emerald-600 dark:text-emerald-400 whitespace-nowrap">{currency(pay.amountPaid)}</td>
+                      <td className="hidden px-4 py-3 text-muted-foreground md:table-cell whitespace-nowrap">{pay.receivedBy}</td>
+                      <td className="px-4 py-3 text-right whitespace-nowrap">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelectedFolio(pay)}
+                          className="text-xs h-7"
+                        >
+                          <Printer className="size-3" /> View Folio
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

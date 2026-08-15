@@ -118,8 +118,10 @@ function AddProductDialog({ onAdd }: { onAdd: (p: Product) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button size="sm" className="bg-accent text-accent-foreground hover:bg-accent/85">
-          <Plus className="size-4" /> Add product
+        <Button size="sm" className="h-8 px-2.5 sm:h-9 sm:px-3 text-xs sm:text-sm bg-accent text-accent-foreground hover:bg-accent/85 shrink-0">
+          <Plus className="size-3.5 sm:size-4" />
+          <span className="hidden sm:inline">Add product</span>
+          <span className="sm:hidden">Add</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
@@ -250,18 +252,20 @@ function Inventory() {
       title="Inventory"
       subtitle={`${items.length} SKUs across 4 branches · stock value ${currency(stockValue)}`}
       actions={
-        <>
-          <Button variant="outline" size="sm">
-            <ArrowLeftRight className="size-4" /> Transfer stock
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <Button variant="outline" size="sm" className="h-8 px-2.5 sm:h-9 sm:px-3 text-xs sm:text-sm shrink-0">
+            <ArrowLeftRight className="size-3.5 sm:size-4" />
+            <span className="hidden sm:inline">Transfer stock</span>
+            <span className="sm:hidden">Transfer</span>
           </Button>
           <AddProductDialog onAdd={(p) => setItems((prev) => [p, ...prev])} />
-        </>
+        </div>
       }
     >
       <div className="grid gap-4 xl:grid-cols-[1fr_320px]">
         <section className="rounded-lg border border-border bg-card">
-          <div className="flex flex-wrap items-center gap-3 border-b border-border p-3">
-            <div className="relative min-w-48 flex-1">
+          <div className="flex flex-col gap-2.5 p-3 border-b border-border sm:flex-row sm:items-center">
+            <div className="relative min-w-0 flex-1">
               <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 value={q}
@@ -270,13 +274,71 @@ function Inventory() {
                 className="h-9 w-full rounded-md border border-border bg-background pr-3 pl-9 text-sm outline-none focus:border-ring"
               />
             </div>
-            <DateRangePicker value={dateRange} onChange={setDateRange} />
-            <Button variant="outline" size="sm">
-              <Download className="size-4" /> CSV
-            </Button>
+            <div className="flex items-center gap-2">
+              <div className="flex-1 sm:flex-initial min-w-0">
+                <DateRangePicker value={dateRange} onChange={setDateRange} />
+              </div>
+              <Button variant="outline" size="sm" className="shrink-0">
+                <Download className="size-4" /> <span className="hidden sm:inline">CSV</span>
+              </Button>
+            </div>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile Card List View */}
+          <div className="divide-y divide-border sm:hidden">
+            {rows.map((p) => {
+              const pct = Math.min(100, (p.stock / Math.max(1, p.threshold * 3)) * 100);
+              const low = p.stock <= p.threshold;
+              return (
+                <div key={p.sku} className="p-3.5 space-y-2 transition-colors hover:bg-secondary/40">
+                  {/* Top: Name & Price */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-sm leading-snug text-foreground">{p.name}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {p.variant} · {p.category}
+                      </p>
+                    </div>
+                    <p className="num text-sm font-bold text-foreground shrink-0">{currency(p.price)}</p>
+                  </div>
+
+                  {/* Middle: SKU, Branch & Stock Status */}
+                  <div className="flex items-center justify-between gap-2 pt-0.5 text-xs">
+                    <div className="flex items-center gap-1.5 text-muted-foreground min-w-0">
+                      <span className="font-mono text-[11px] bg-muted px-1.5 py-0.5 rounded border border-border/70 shrink-0 font-medium">
+                        {p.sku}
+                      </span>
+                      <span>·</span>
+                      <span className="truncate">{p.branch}</span>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="num font-semibold text-foreground">
+                        {p.stock} <span className="text-[10px] font-normal text-muted-foreground">in stock</span>
+                      </span>
+                      <StatusBadge tone={p.stock === 0 ? "bad" : low ? "warn" : "good"}>
+                        {p.stock === 0 ? "Out" : low ? "Low" : "Healthy"}
+                      </StatusBadge>
+                    </div>
+                  </div>
+
+                  {/* Stock Bar */}
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                    <div
+                      className={cn(
+                        "h-full rounded-full transition-all",
+                        p.stock === 0 ? "bg-destructive" : low ? "bg-warning" : "bg-accent",
+                      )}
+                      style={{ width: `${Math.max(pct, 4)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-xs tracking-wide text-muted-foreground uppercase">

@@ -74,58 +74,60 @@ function PayrollPage() {
       title="Staff & Teacher Payroll"
       subtitle={`${STAFF_PAYROLL.length} academic & administrative staff · ${currency(SCHOOL_SUMMARY.totalMonthlyPayroll)} total monthly salary commitment`}
       actions={
-        <Button size="sm" className="bg-[#22c55e] text-white hover:bg-[#16a34a]">
-          <Plus className="size-4" /> Run Monthly Payroll
+        <Button size="sm" className="h-8 px-2.5 sm:h-9 sm:px-3 text-xs sm:text-sm bg-[#22c55e] text-white hover:bg-[#16a34a] shrink-0">
+          <Plus className="size-3.5 sm:size-4" />
+          <span className="hidden sm:inline">Run Monthly Payroll</span>
+          <span className="sm:hidden">Run Payroll</span>
         </Button>
       }
     >
       {/* Stat Summaries */}
-      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-border bg-card p-4 transition-all">
+      <div className="mb-5 grid grid-cols-2 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Monthly Net Payroll</p>
-            <span className="rounded-full bg-slate-100 p-2 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-              <DollarSign className="size-4" />
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Monthly Net</p>
+            <span className="rounded-full bg-slate-100 p-1.5 sm:p-2 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <DollarSign className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold">{currency(SCHOOL_SUMMARY.totalMonthlyPayroll)}</p>
+          <p className="mt-2 text-xl sm:text-2xl font-bold">{currency(SCHOOL_SUMMARY.totalMonthlyPayroll)}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">August 2026 payroll</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4 transition-all">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Total Staff</p>
-            <span className="rounded-full bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
-              <Users className="size-4" />
+            <span className="rounded-full bg-blue-50 p-1.5 sm:p-2 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+              <Users className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-blue-600 dark:text-blue-400">
-            {STAFF_PAYROLL.length} employees
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
+            {STAFF_PAYROLL.length}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">Teachers & Admins</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4 transition-all">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Disbursed Salaries</p>
-            <span className="rounded-full bg-emerald-50 p-2 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-              <CheckCircle2 className="size-4" />
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Disbursed</p>
+            <span className="rounded-full bg-emerald-50 p-1.5 sm:p-2 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+              <CheckCircle2 className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">
             {STAFF_PAYROLL.filter((s) => s.status === "Paid").length} / {STAFF_PAYROLL.length}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">Paid to bank accounts</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Paid to bank</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4 transition-all">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Pending Processing</p>
-            <span className="rounded-full bg-amber-50 p-2 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
-              <Clock className="size-4" />
+            <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Processing</p>
+            <span className="rounded-full bg-amber-50 p-1.5 sm:p-2 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+              <Clock className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-amber-600 dark:text-amber-400">
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">
             {STAFF_PAYROLL.filter((s) => s.status === "Processing").length}
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">Awaiting approval</p>
@@ -133,8 +135,8 @@ function PayrollPage() {
       </div>
 
       {/* Toolbar */}
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="mb-4 space-y-2.5">
+        <div className="relative w-full">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={search}
@@ -144,10 +146,11 @@ function PayrollPage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        {/* Filter pills — horizontally scrollable in one row */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
           <button
             onClick={() => setStatusFilter("all")}
-            className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+            className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
               statusFilter === "all"
                 ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
                 : "bg-secondary text-muted-foreground hover:bg-border"
@@ -162,7 +165,7 @@ function PayrollPage() {
               <button
                 key={st}
                 onClick={() => setStatusFilter(st)}
-                className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+                className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
                   isSelected ? cfg.activePill : "bg-secondary text-muted-foreground hover:bg-border"
                 }`}
               >
@@ -170,53 +173,63 @@ function PayrollPage() {
               </button>
             );
           })}
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
+          <div className="shrink-0">
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
+          </div>
         </div>
       </div>
 
-      {/* Staff Payroll Table */}
-      <div className="overflow-hidden rounded-xl border border-border bg-card">
-        <table className="w-full text-sm">
+      {/* Staff Payroll Sliding Table (Horizontally Scrollable without Card Grouping) */}
+      <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-2xs">
+        <table className="w-full min-w-[760px] text-sm">
           <thead>
             <tr className="border-b border-border bg-secondary/40 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              <th className="px-4 py-3">Staff ID</th>
-              <th className="px-4 py-3">Employee Name</th>
-              <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Basic Salary</th>
-              <th className="hidden px-4 py-3 md:table-cell">Allowances</th>
-              <th className="hidden px-4 py-3 md:table-cell">Deductions</th>
-              <th className="px-4 py-3 font-bold">Net Pay</th>
-              <th className="px-4 py-3">Bank Details</th>
-              <th className="px-4 py-3">Status</th>
+              <th className="px-4 py-3 whitespace-nowrap">Staff ID</th>
+              <th className="px-4 py-3 whitespace-nowrap">Employee Name</th>
+              <th className="px-4 py-3 whitespace-nowrap">Role</th>
+              <th className="px-4 py-3 whitespace-nowrap">Basic Salary</th>
+              <th className="px-4 py-3 whitespace-nowrap">Allowances</th>
+              <th className="px-4 py-3 whitespace-nowrap">Deductions</th>
+              <th className="px-4 py-3 font-bold whitespace-nowrap">Net Pay</th>
+              <th className="px-4 py-3 whitespace-nowrap">Bank Details</th>
+              <th className="px-4 py-3 whitespace-nowrap">Status</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {filtered.map((staff) => {
-              const cfg = STATUS_CONFIG[staff.status];
-              const Icon = cfg.icon;
-              return (
-                <tr key={staff.id} className="transition-colors hover:bg-secondary/30">
-                  <td className="px-4 py-3 font-mono text-xs font-semibold">{staff.staffId}</td>
-                  <td className="px-4 py-3 font-semibold text-foreground">{staff.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{staff.role}</td>
-                  <td className="px-4 py-3 font-medium">{currency(staff.basicSalary)}</td>
-                  <td className="hidden px-4 py-3 text-emerald-600 dark:text-emerald-400 md:table-cell">
-                    +{currency(staff.allowances)}
-                  </td>
-                  <td className="hidden px-4 py-3 text-rose-600 dark:text-rose-400 md:table-cell">
-                    -{currency(staff.deductions)}
-                  </td>
-                  <td className="px-4 py-3 font-bold text-foreground">{currency(staff.netPay)}</td>
-                  <td className="px-4 py-3 text-xs text-muted-foreground">{staff.bankAccount}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs ${cfg.bg} ${cfg.color}`}>
-                      <Icon className="size-3" />
-                      {cfg.label}
-                    </span>
-                  </td>
-                </tr>
-              );
-            })}
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan={9} className="py-10 text-center text-sm text-muted-foreground">
+                  No staff members match your search.
+                </td>
+              </tr>
+            ) : (
+              filtered.map((staff) => {
+                const cfg = STATUS_CONFIG[staff.status];
+                const Icon = cfg.icon;
+                return (
+                  <tr key={staff.id} className="transition-colors hover:bg-secondary/30">
+                    <td className="px-4 py-3 font-mono text-xs font-semibold whitespace-nowrap">{staff.staffId}</td>
+                    <td className="px-4 py-3 font-semibold text-foreground whitespace-nowrap">{staff.name}</td>
+                    <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">{staff.role}</td>
+                    <td className="px-4 py-3 font-medium whitespace-nowrap">{currency(staff.basicSalary)}</td>
+                    <td className="px-4 py-3 text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                      +{currency(staff.allowances)}
+                    </td>
+                    <td className="px-4 py-3 text-rose-600 dark:text-rose-400 whitespace-nowrap">
+                      -{currency(staff.deductions)}
+                    </td>
+                    <td className="px-4 py-3 font-bold text-foreground whitespace-nowrap">{currency(staff.netPay)}</td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground whitespace-nowrap">{staff.bankAccount}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs ${cfg.bg} ${cfg.color}`}>
+                        <Icon className="size-3" />
+                        {cfg.label}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>

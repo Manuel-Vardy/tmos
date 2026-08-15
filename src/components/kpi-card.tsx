@@ -27,31 +27,31 @@ export function KpiCard({
   return (
     <Card
       data-testid={testId}
-      className="relative flex flex-col gap-3 p-5 overflow-hidden"
+      className="relative flex flex-col gap-2 p-3 sm:gap-3 sm:p-5 overflow-hidden"
     >
       {/* Icon — top-right corner */}
-      <div className="absolute top-4 right-4 grid size-9 place-items-center rounded-lg bg-muted">
-        <Icon className="size-5 text-muted-foreground" />
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 grid size-7 sm:size-9 place-items-center rounded-lg bg-muted">
+        <Icon className="size-4 sm:size-5 text-muted-foreground" />
       </div>
 
       {/* Label */}
-      <p className="text-sm font-medium text-muted-foreground pr-12">{label}</p>
+      <p className="text-[10px] sm:text-sm font-medium text-muted-foreground pr-8 sm:pr-12 leading-tight uppercase tracking-wide">{label}</p>
 
       {/* Value */}
-      <p className="text-3xl font-bold tracking-tight text-foreground">{value}</p>
+      <p className="text-base sm:text-3xl font-bold tracking-tight text-foreground leading-tight">{value}</p>
 
       {/* Delta indicator */}
       {hasDelta && (
         <div
           className={cn(
-            "inline-flex items-center gap-1 text-sm font-medium",
+            "inline-flex items-center gap-1 text-[10px] sm:text-sm font-medium",
             isPositive ? "text-emerald-600" : "text-red-500",
           )}
         >
           {isPositive ? (
-            <TrendingUp className="size-4 shrink-0" />
+            <TrendingUp className="size-3 sm:size-4 shrink-0" />
           ) : (
-            <TrendingDown className="size-4 shrink-0" />
+            <TrendingDown className="size-3 sm:size-4 shrink-0" />
           )}
           <span>
             {isPositive ? "+" : ""}
@@ -61,7 +61,7 @@ export function KpiCard({
       )}
 
       {/* Sub text */}
-      <p className="text-xs text-muted-foreground">{sub}</p>
+      <p className="text-[10px] sm:text-xs text-muted-foreground leading-tight">{sub}</p>
     </Card>
   );
 }

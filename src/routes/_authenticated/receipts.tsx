@@ -93,59 +93,59 @@ function ReceiptsPage() {
       }
     >
       {/* Stat Cards */}
-      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-border bg-card p-4">
+      <div className="mb-5 grid grid-cols-2 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Total Receipts</p>
-            <span className="rounded-full bg-slate-100 p-2 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-              <Receipt className="size-4" />
+            <span className="rounded-full bg-slate-100 p-1.5 sm:p-2 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <Receipt className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold">{FEE_TRANSACTIONS.length}</p>
+          <p className="mt-2 text-xl sm:text-2xl font-bold">{FEE_TRANSACTIONS.length}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">Issued this term</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Mobile Money</p>
-            <span className="rounded-full bg-amber-50 p-2 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
-              <Smartphone className="size-4" />
+            <span className="rounded-full bg-amber-50 p-1.5 sm:p-2 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+              <Smartphone className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-amber-600 dark:text-amber-400">
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-amber-600 dark:text-amber-400">
             {FEE_TRANSACTIONS.filter((t) => t.paymentMethod === "Mobile Money (MTN)").length}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">MTN MoMo transactions</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">MTN MoMo txns</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Bank Transfers</p>
-            <span className="rounded-full bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
-              <Building2 className="size-4" />
+            <span className="rounded-full bg-blue-50 p-1.5 sm:p-2 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400">
+              <Building2 className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
             {FEE_TRANSACTIONS.filter((t) => t.paymentMethod === "Bank Transfer").length}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">Direct bank deposits</p>
+          <p className="mt-0.5 text-xs text-muted-foreground">Direct deposits</p>
         </div>
 
-        <div className="rounded-xl border border-border bg-card p-4">
+        <div className="rounded-xl border border-border bg-card p-3 sm:p-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Shown Amount</p>
-            <span className="rounded-full bg-emerald-50 p-2 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-              <Banknote className="size-4" />
+            <span className="rounded-full bg-emerald-50 p-1.5 sm:p-2 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+              <Banknote className="size-3.5 sm:size-4" />
             </span>
           </div>
-          <p className="mt-3 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{currency(totalShown)}</p>
+          <p className="mt-2 text-xl sm:text-2xl font-bold text-emerald-600 dark:text-emerald-400">{currency(totalShown)}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{filtered.length} receipts filtered</p>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <div className="relative flex-1 min-w-[200px]">
+      <div className="mb-4 space-y-2.5">
+        <div className="relative w-full">
           <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <input
             value={search}
@@ -155,10 +155,11 @@ function ReceiptsPage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        {/* Filter pills — horizontally scrollable in one row */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
           <button
             onClick={() => setMethodFilter("all")}
-            className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+            className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
               methodFilter === "all"
                 ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
                 : "bg-secondary text-muted-foreground hover:bg-border"
@@ -173,7 +174,7 @@ function ReceiptsPage() {
               <button
                 key={method}
                 onClick={() => setMethodFilter(method)}
-                className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
+                className={`shrink-0 rounded-full px-3.5 py-1 text-xs font-semibold transition-all ${
                   isSelected ? cfg.activePill : "bg-secondary text-muted-foreground hover:bg-border"
                 }`}
               >
@@ -181,7 +182,9 @@ function ReceiptsPage() {
               </button>
             );
           })}
-          <DateRangePicker value={dateRange} onChange={setDateRange} />
+          <div className="shrink-0">
+            <DateRangePicker value={dateRange} onChange={setDateRange} />
+          </div>
         </div>
       </div>
 
