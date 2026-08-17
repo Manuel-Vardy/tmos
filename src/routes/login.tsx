@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
+import { Eye, EyeOff } from "lucide-react";
 import type { InstitutionType } from "@/lib/institution-types";
 import { INSTITUTION_TYPES } from "@/lib/institution-types";
 import { INSTITUTION_META } from "@/lib/institution-config";
@@ -59,6 +60,7 @@ function SignInPage() {
   const [selectedType, setSelectedType] = useState<string>(INSTITUTION_TYPES[0]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -100,7 +102,7 @@ function SignInPage() {
         <div className="relative flex items-center justify-center px-6 py-12 sm:px-10 lg:px-14 xl:px-20">
           <a
             href="/"
-            className="absolute top-6 right-6 flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-800 transition-colors"
+            className="fixed top-4 right-4 z-50 flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-800 transition-colors lg:absolute lg:top-6 lg:right-6 lg:z-auto"
           >
             <span className="text-base leading-none">‹</span>
             Back to Dashboard
@@ -177,13 +179,22 @@ function SignInPage() {
                 </div>
                 <div className="flex h-12 items-center rounded-xl border border-black/20 bg-white px-4 transition-all focus-within:border-[#22c55e] focus-within:ring-1 focus-within:ring-[#22c55e] dark:border-white/20 dark:bg-white/5">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••••••"
                     className="w-full bg-transparent text-sm text-black outline-none dark:text-white placeholder:text-black/30 dark:placeholder:text-white/30"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="ml-2 shrink-0 text-black/40 hover:text-black/70 dark:text-white/40 dark:hover:text-white/70 transition-colors"
+                    tabIndex={-1}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
                 </div>
               </div>
 

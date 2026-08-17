@@ -1,6 +1,5 @@
 import {
   Store,
-  Warehouse,
   UtensilsCrossed,
   Pill,
   GraduationCap,
@@ -23,37 +22,32 @@ export const INSTITUTION_META: Record<
   }
 > = {
   retail: {
-    label: "Retail",
+    label: "Retail Shop",
     description: "Shops and general merchandise stores.",
     icon: Store,
     branchLabel: "Branch",
   },
-  wholesale: {
-    label: "Wholesale",
-    description: "Bulk distribution and trade supply.",
-    icon: Warehouse,
-    branchLabel: "Depot",
-  },
+  // wholesale temporarily removed — will be added back later
   restaurant: {
-    label: "Restaurant",
+    label: "Eatery",
     description: "Table service, takeaways and food courts.",
     icon: UtensilsCrossed,
     branchLabel: "Outlet",
   },
   pharmacy: {
-    label: "Pharmacy / Clinic",
+    label: "Pharmacy",
     description: "Dispensaries, clinics and health retail.",
     icon: Pill,
     branchLabel: "Branch",
   },
   school: {
-    label: "School",
+    label: "Academic Institution",
     description: "Schools, training centres and academies.",
     icon: GraduationCap,
     branchLabel: "Campus",
   },
   ngo: {
-    label: "NGO / Church",
+    label: "Church",
     description: "Churches, associations and non-profits.",
     icon: HeartHandshake,
     branchLabel: "Chapter",

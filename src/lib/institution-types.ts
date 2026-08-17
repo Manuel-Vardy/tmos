@@ -1,6 +1,6 @@
 export const INSTITUTION_TYPES = [
   "retail",
-  "wholesale",
+  // "wholesale",  // temporarily removed — will be added back later
   "restaurant",
   "pharmacy",
   "school",

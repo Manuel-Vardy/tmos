@@ -4,7 +4,7 @@ import { DashboardErrorBoundary } from "@/components/dashboards/dashboard-error-
 
 // Import all 11 dashboard components
 import { RetailDashboard } from "@/components/dashboards/retail-dashboard";
-import { WholesaleDashboard } from "@/components/dashboards/wholesale-dashboard";
+// import { WholesaleDashboard } from "@/components/dashboards/wholesale-dashboard"; // temporarily removed
 import { RestaurantDashboard } from "@/components/dashboards/restaurant-dashboard";
 import { PharmacyDashboard } from "@/components/dashboards/pharmacy-dashboard";
 import { SchoolDashboard } from "@/components/dashboards/school-dashboard";
@@ -19,7 +19,7 @@ export type DashboardComponent = React.ComponentType;
 
 export const DASHBOARD_REGISTRY: Record<InstitutionType, DashboardComponent> = {
   retail: RetailDashboard,
-  wholesale: WholesaleDashboard,
+  // wholesale: WholesaleDashboard, // temporarily removed
   restaurant: RestaurantDashboard,
   pharmacy: PharmacyDashboard,
   school: SchoolDashboard,
