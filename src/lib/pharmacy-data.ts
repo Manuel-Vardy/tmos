@@ -15,6 +15,7 @@ export type Prescription = {
   patientName: string;
   doctorName: string;
   clinic: string;
+  branch: string;
   status: "pending" | "dispensed" | "partially_filled" | "cancelled";
   items: PrescriptionItem[];
   totalAmount: number;
@@ -22,7 +23,9 @@ export type Prescription = {
   insuranceProvider?: string;
   copayAmount: number;
   date: string;
+  timeAdded: string;
   pharmacist: string;
+  method: string;
 };
 
 export type PatientRecord = {
@@ -44,7 +47,8 @@ export type PharmacyMedication = {
   id: string;
   drugName: string;
   brandName: string;
-  category: "Antibiotics" | "Analgesics" | "Antihypertensives" | "Antidiabetics" | "Vitamins & Supplements";
+  category:
+    "Antibiotics" | "Analgesics" | "Antihypertensives" | "Antidiabetics" | "Vitamins & Supplements";
   dosageForm: "Tablet" | "Capsule" | "Syrup" | "Injection" | "Ointment";
   strength: string;
   stockLevel: number;
@@ -221,7 +225,10 @@ export const PRESCRIPTIONS: Prescription[] = [
     insuranceProvider: "NHIS (National Health)",
     copayAmount: 40,
     date: "11 Aug 2026",
+    timeAdded: "08:42 AM",
     pharmacist: "Pharm. Janet Boateng",
+    method: "Cash",
+    branch: "Osu Flagship",
   },
   {
     id: "RX-502",
@@ -256,7 +263,10 @@ export const PRESCRIPTIONS: Prescription[] = [
     insuranceProvider: "Enterprise Life",
     copayAmount: 69,
     date: "11 Aug 2026",
+    timeAdded: "10:15 AM",
     pharmacist: "Pharm. Janet Boateng",
+    method: "Card",
+    branch: "Kumasi Branch",
   },
   {
     id: "RX-503",
@@ -282,9 +292,266 @@ export const PRESCRIPTIONS: Prescription[] = [
     insuranceProvider: "Glico Health",
     copayAmount: 13,
     date: "10 Aug 2026",
+    timeAdded: "02:30 PM",
     pharmacist: "Pharm. Emmanuel Danso",
+    method: "Insurance",
+    branch: "Osu Flagship",
+  },
+  {
+    id: "RX-504",
+    rxNumber: "RX-2026-0094",
+    patientId: "PAT-104",
+    patientName: "Abena Osei",
+    doctorName: "Dr. Mary Ofori",
+    clinic: "Ridge Hospital Accra",
+    status: "cancelled",
+    items: [
+      {
+        medicationId: "MED-001",
+        drugName: "Augmentin (Amoxicillin 625mg)",
+        dosage: "1 tab twice daily x 5 days",
+        quantity: 10,
+        unitPrice: 85,
+        totalPrice: 850,
+        refillsAllowed: 0,
+      },
+    ],
+    totalAmount: 150,
+    copayAmount: 0,
+    date: "09 Aug 2026",
+    timeAdded: "11:20 AM",
+    pharmacist: "Pharm. Janet Boateng",
+    method: "Check",
+    branch: "Takoradi Branch",
+  },
+  {
+    id: "RX-505",
+    rxNumber: "RX-2026-0095",
+    patientId: "PAT-103",
+    patientName: "Kwaku Addo",
+    doctorName: "Dr. Seth Appiah",
+    clinic: "Korle Bu Teaching Hospital",
+    status: "partially_filled",
+    items: [
+      {
+        medicationId: "MED-003",
+        drugName: "Norvasc (Amlodipine 10mg)",
+        dosage: "1 tab daily x 30 days",
+        quantity: 15,
+        unitPrice: 45,
+        totalPrice: 675,
+        refillsAllowed: 5,
+      },
+      {
+        medicationId: "MED-004",
+        drugName: "Glucophage (Metformin 500mg)",
+        dosage: "1 tab with meals x 60 days",
+        quantity: 30,
+        unitPrice: 35,
+        totalPrice: 1050,
+        refillsAllowed: 3,
+      },
+    ],
+    totalAmount: 280,
+    insuranceClaimNumber: "ENT-CLM-4482",
+    insuranceProvider: "Enterprise Life",
+    copayAmount: 56,
+    date: "08 Aug 2026",
+    timeAdded: "04:05 PM",
+    pharmacist: "Pharm. Emmanuel Danso",
+    method: "Bank Transfer",
+    branch: "Kumasi Branch",
   },
 ];
+
+export type PharmacyPurchaseOrder = {
+  id: string;
+  supplier: string;
+  supplierType: "Manufacturer" | "Wholesaler" | "Distributor" | "Importer";
+  items: {
+    medicationId: string;
+    brandName: string;
+    quantity: number;
+    unitCost: number;
+    batchNumber: string;
+    expiryDate: string;
+  }[];
+  itemsCount: number;
+  totalCost: number;
+  status: "draft" | "submitted" | "partially_received" | "received" | "cancelled";
+  orderDate: string;
+  expectedDelivery: string;
+  branch: string;
+  paymentTerms: "Net 30" | "Net 15" | "Cash on Delivery" | "Prepaid";
+};
+
+export const PHARMACY_PURCHASE_ORDERS: PharmacyPurchaseOrder[] = [
+  {
+    id: "PO-PHA-2026-0891",
+    supplier: "Pfizer Ghana Ltd",
+    supplierType: "Manufacturer",
+    items: [
+      {
+        medicationId: "MED-001",
+        brandName: "Augmentin",
+        quantity: 500,
+        unitCost: 62,
+        batchNumber: "BATCH-2026F",
+        expiryDate: "15 Nov 2028",
+      },
+      {
+        medicationId: "MED-003",
+        brandName: "Norvasc",
+        quantity: 300,
+        unitCost: 33,
+        batchNumber: "BATCH-2026G",
+        expiryDate: "10 Feb 2029",
+      },
+    ],
+    itemsCount: 800,
+    totalCost: 40900,
+    status: "submitted",
+    orderDate: "05 Aug 2026",
+    expectedDelivery: "18 Aug 2026",
+    branch: "Osu Flagship",
+    paymentTerms: "Net 30",
+  },
+  {
+    id: "PO-PHA-2026-0890",
+    supplier: "Sanofi-Aventis Ghana",
+    supplierType: "Manufacturer",
+    items: [
+      {
+        medicationId: "MED-004",
+        brandName: "Glucophage",
+        quantity: 600,
+        unitCost: 26,
+        batchNumber: "BATCH-2026H",
+        expiryDate: "05 Jul 2029",
+      },
+    ],
+    itemsCount: 600,
+    totalCost: 15600,
+    status: "partially_received",
+    orderDate: "02 Aug 2026",
+    expectedDelivery: "14 Aug 2026",
+    branch: "Osu Flagship",
+    paymentTerms: "Net 15",
+  },
+  {
+    id: "PO-PHA-2026-0889",
+    supplier: "Kumasi Pharma Wholesale",
+    supplierType: "Wholesaler",
+    items: [
+      {
+        medicationId: "MED-002",
+        brandName: "Panadol Extra",
+        quantity: 2000,
+        unitCost: 10,
+        batchNumber: "BATCH-2026I",
+        expiryDate: "20 Jun 2029",
+      },
+      {
+        medicationId: "MED-005",
+        brandName: "Feroglobin Syrup",
+        quantity: 400,
+        unitCost: 48,
+        batchNumber: "BATCH-2026J",
+        expiryDate: "18 Dec 2028",
+      },
+    ],
+    itemsCount: 2400,
+    totalCost: 39200,
+    status: "received",
+    orderDate: "25 Jul 2026",
+    expectedDelivery: "01 Aug 2026",
+    branch: "Kumasi Branch",
+    paymentTerms: "Cash on Delivery",
+  },
+  {
+    id: "PO-PHA-2026-0888",
+    supplier: "West African Drug Importers",
+    supplierType: "Importer",
+    items: [
+      {
+        medicationId: "MED-001",
+        brandName: "Augmentin",
+        quantity: 200,
+        unitCost: 65,
+        batchNumber: "BATCH-2026K",
+        expiryDate: "20 Mar 2028",
+      },
+    ],
+    itemsCount: 200,
+    totalCost: 13000,
+    status: "draft",
+    orderDate: "10 Aug 2026",
+    expectedDelivery: "02 Sep 2026",
+    branch: "Takoradi Branch",
+    paymentTerms: "Prepaid",
+  },
+  {
+    id: "PO-PHA-2026-0887",
+    supplier: "Accra Pharma Distributors",
+    supplierType: "Distributor",
+    items: [
+      {
+        medicationId: "MED-003",
+        brandName: "Norvasc",
+        quantity: 150,
+        unitCost: 35,
+        batchNumber: "BATCH-2026L",
+        expiryDate: "30 Nov 2027",
+      },
+      {
+        medicationId: "MED-004",
+        brandName: "Glucophage",
+        quantity: 200,
+        unitCost: 28,
+        batchNumber: "BATCH-2026M",
+        expiryDate: "15 Jan 2029",
+      },
+    ],
+    itemsCount: 350,
+    totalCost: 10850,
+    status: "cancelled",
+    orderDate: "28 Jul 2026",
+    expectedDelivery: "08 Aug 2026",
+    branch: "Accra Mall",
+    paymentTerms: "Net 30",
+  },
+  {
+    id: "PO-PHA-2026-0886",
+    supplier: "GSK Consumer Ghana",
+    supplierType: "Manufacturer",
+    items: [
+      {
+        medicationId: "MED-002",
+        brandName: "Panadol Extra",
+        quantity: 1500,
+        unitCost: 9,
+        batchNumber: "BATCH-2026N",
+        expiryDate: "10 Aug 2029",
+      },
+    ],
+    itemsCount: 1500,
+    totalCost: 13500,
+    status: "received",
+    orderDate: "15 Jul 2026",
+    expectedDelivery: "22 Jul 2026",
+    branch: "Osu Flagship",
+    paymentTerms: "Net 30",
+  },
+];
+
+export const PHARMACY_SUPPLIER_TYPES = [
+  "Manufacturer",
+  "Wholesaler",
+  "Distributor",
+  "Importer",
+] as const;
+
+export const PHARMACY_PAYMENT_TERMS = ["Net 30", "Net 15", "Cash on Delivery", "Prepaid"] as const;
 
 export const PHARMACY_SUMMARY = {
   totalPendingDispensary: PRESCRIPTIONS.filter((r) => r.status === "pending").length,

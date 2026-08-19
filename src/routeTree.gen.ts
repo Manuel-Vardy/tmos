@@ -23,19 +23,22 @@ import { Route as AuthenticatedDeliveryRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedDisbursementsRouteImport } from './routes/_authenticated/disbursements'
 import { Route as AuthenticatedDispensaryRouteImport } from './routes/_authenticated/dispensary'
 import { Route as AuthenticatedDonationsRouteImport } from './routes/_authenticated/donations'
+import { Route as AuthenticatedEateryInventoryRouteImport } from './routes/_authenticated/eatery-inventory'
+import { Route as AuthenticatedEateryReportsRouteImport } from './routes/_authenticated/eatery-reports'
+import { Route as AuthenticatedEaterySalesRouteImport } from './routes/_authenticated/eatery-sales'
 import { Route as AuthenticatedExpensesRouteImport } from './routes/_authenticated/expenses'
 import { Route as AuthenticatedFeesRouteImport } from './routes/_authenticated/fees'
 import { Route as AuthenticatedFinishedGoodsRouteImport } from './routes/_authenticated/finished-goods'
 import { Route as AuthenticatedHousekeepingRouteImport } from './routes/_authenticated/housekeeping'
 import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
-import { Route as AuthenticatedKitchenRouteImport } from './routes/_authenticated/kitchen'
 import { Route as AuthenticatedMembersRouteImport } from './routes/_authenticated/members'
 import { Route as AuthenticatedMenuRouteImport } from './routes/_authenticated/menu'
 import { Route as AuthenticatedOrdersRouteImport } from './routes/_authenticated/orders'
 import { Route as AuthenticatedPatientsRouteImport } from './routes/_authenticated/patients'
 import { Route as AuthenticatedPaymentsRouteImport } from './routes/_authenticated/payments'
 import { Route as AuthenticatedPayrollRouteImport } from './routes/_authenticated/payroll'
+import { Route as AuthenticatedPharmacyCheckoutRouteImport } from './routes/_authenticated/pharmacy-checkout'
 import { Route as AuthenticatedPosRouteImport } from './routes/_authenticated/pos'
 import { Route as AuthenticatedProductionRouteImport } from './routes/_authenticated/production'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
@@ -51,9 +54,7 @@ import { Route as AuthenticatedRoomsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedSalesRouteImport } from './routes/_authenticated/sales'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
-import { Route as AuthenticatedTablesRouteImport } from './routes/_authenticated/tables'
 import { Route as AuthenticatedTimeTrackingRouteImport } from './routes/_authenticated/time-tracking'
-import { Route as AuthenticatedWastageRouteImport } from './routes/_authenticated/wastage'
 
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
@@ -126,6 +127,24 @@ const AuthenticatedDonationsRoute = AuthenticatedDonationsRouteImport.update({
   path: '/donations',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedEateryInventoryRoute =
+  AuthenticatedEateryInventoryRouteImport.update({
+    id: '/eatery-inventory',
+    path: '/eatery-inventory',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEateryReportsRoute =
+  AuthenticatedEateryReportsRouteImport.update({
+    id: '/eatery-reports',
+    path: '/eatery-reports',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEaterySalesRoute =
+  AuthenticatedEaterySalesRouteImport.update({
+    id: '/eatery-sales',
+    path: '/eatery-sales',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedExpensesRoute = AuthenticatedExpensesRouteImport.update({
   id: '/expenses',
   path: '/expenses',
@@ -158,11 +177,6 @@ const AuthenticatedInvoicesRoute = AuthenticatedInvoicesRouteImport.update({
   path: '/invoices',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedKitchenRoute = AuthenticatedKitchenRouteImport.update({
-  id: '/kitchen',
-  path: '/kitchen',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedMembersRoute = AuthenticatedMembersRouteImport.update({
   id: '/members',
   path: '/members',
@@ -193,6 +207,12 @@ const AuthenticatedPayrollRoute = AuthenticatedPayrollRouteImport.update({
   path: '/payroll',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPharmacyCheckoutRoute =
+  AuthenticatedPharmacyCheckoutRouteImport.update({
+    id: '/pharmacy-checkout',
+    path: '/pharmacy-checkout',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPosRoute = AuthenticatedPosRouteImport.update({
   id: '/pos',
   path: '/pos',
@@ -272,22 +292,12 @@ const AuthenticatedStudentsRoute = AuthenticatedStudentsRouteImport.update({
   path: '/students',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedTablesRoute = AuthenticatedTablesRouteImport.update({
-  id: '/tables',
-  path: '/tables',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedTimeTrackingRoute =
   AuthenticatedTimeTrackingRouteImport.update({
     id: '/time-tracking',
     path: '/time-tracking',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedWastageRoute = AuthenticatedWastageRouteImport.update({
-  id: '/wastage',
-  path: '/wastage',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
@@ -303,19 +313,22 @@ export interface FileRoutesByFullPath {
   '/disbursements': typeof AuthenticatedDisbursementsRoute
   '/dispensary': typeof AuthenticatedDispensaryRoute
   '/donations': typeof AuthenticatedDonationsRoute
+  '/eatery-inventory': typeof AuthenticatedEateryInventoryRoute
+  '/eatery-reports': typeof AuthenticatedEateryReportsRoute
+  '/eatery-sales': typeof AuthenticatedEaterySalesRoute
   '/expenses': typeof AuthenticatedExpensesRoute
   '/fees': typeof AuthenticatedFeesRoute
   '/finished-goods': typeof AuthenticatedFinishedGoodsRoute
   '/housekeeping': typeof AuthenticatedHousekeepingRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
-  '/kitchen': typeof AuthenticatedKitchenRoute
   '/members': typeof AuthenticatedMembersRoute
   '/menu': typeof AuthenticatedMenuRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/patients': typeof AuthenticatedPatientsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/payroll': typeof AuthenticatedPayrollRoute
+  '/pharmacy-checkout': typeof AuthenticatedPharmacyCheckoutRoute
   '/pos': typeof AuthenticatedPosRoute
   '/production': typeof AuthenticatedProductionRoute
   '/projects': typeof AuthenticatedProjectsRoute
@@ -331,9 +344,7 @@ export interface FileRoutesByFullPath {
   '/sales': typeof AuthenticatedSalesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/students': typeof AuthenticatedStudentsRoute
-  '/tables': typeof AuthenticatedTablesRoute
   '/time-tracking': typeof AuthenticatedTimeTrackingRoute
-  '/wastage': typeof AuthenticatedWastageRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -348,19 +359,22 @@ export interface FileRoutesByTo {
   '/disbursements': typeof AuthenticatedDisbursementsRoute
   '/dispensary': typeof AuthenticatedDispensaryRoute
   '/donations': typeof AuthenticatedDonationsRoute
+  '/eatery-inventory': typeof AuthenticatedEateryInventoryRoute
+  '/eatery-reports': typeof AuthenticatedEateryReportsRoute
+  '/eatery-sales': typeof AuthenticatedEaterySalesRoute
   '/expenses': typeof AuthenticatedExpensesRoute
   '/fees': typeof AuthenticatedFeesRoute
   '/finished-goods': typeof AuthenticatedFinishedGoodsRoute
   '/housekeeping': typeof AuthenticatedHousekeepingRoute
   '/inventory': typeof AuthenticatedInventoryRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
-  '/kitchen': typeof AuthenticatedKitchenRoute
   '/members': typeof AuthenticatedMembersRoute
   '/menu': typeof AuthenticatedMenuRoute
   '/orders': typeof AuthenticatedOrdersRoute
   '/patients': typeof AuthenticatedPatientsRoute
   '/payments': typeof AuthenticatedPaymentsRoute
   '/payroll': typeof AuthenticatedPayrollRoute
+  '/pharmacy-checkout': typeof AuthenticatedPharmacyCheckoutRoute
   '/pos': typeof AuthenticatedPosRoute
   '/production': typeof AuthenticatedProductionRoute
   '/projects': typeof AuthenticatedProjectsRoute
@@ -376,9 +390,7 @@ export interface FileRoutesByTo {
   '/sales': typeof AuthenticatedSalesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/students': typeof AuthenticatedStudentsRoute
-  '/tables': typeof AuthenticatedTablesRoute
   '/time-tracking': typeof AuthenticatedTimeTrackingRoute
-  '/wastage': typeof AuthenticatedWastageRoute
   '/': typeof AuthenticatedIndexRoute
 }
 export interface FileRoutesById {
@@ -396,19 +408,22 @@ export interface FileRoutesById {
   '/_authenticated/disbursements': typeof AuthenticatedDisbursementsRoute
   '/_authenticated/dispensary': typeof AuthenticatedDispensaryRoute
   '/_authenticated/donations': typeof AuthenticatedDonationsRoute
+  '/_authenticated/eatery-inventory': typeof AuthenticatedEateryInventoryRoute
+  '/_authenticated/eatery-reports': typeof AuthenticatedEateryReportsRoute
+  '/_authenticated/eatery-sales': typeof AuthenticatedEaterySalesRoute
   '/_authenticated/expenses': typeof AuthenticatedExpensesRoute
   '/_authenticated/fees': typeof AuthenticatedFeesRoute
   '/_authenticated/finished-goods': typeof AuthenticatedFinishedGoodsRoute
   '/_authenticated/housekeeping': typeof AuthenticatedHousekeepingRoute
   '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
-  '/_authenticated/kitchen': typeof AuthenticatedKitchenRoute
   '/_authenticated/members': typeof AuthenticatedMembersRoute
   '/_authenticated/menu': typeof AuthenticatedMenuRoute
   '/_authenticated/orders': typeof AuthenticatedOrdersRoute
   '/_authenticated/patients': typeof AuthenticatedPatientsRoute
   '/_authenticated/payments': typeof AuthenticatedPaymentsRoute
   '/_authenticated/payroll': typeof AuthenticatedPayrollRoute
+  '/_authenticated/pharmacy-checkout': typeof AuthenticatedPharmacyCheckoutRoute
   '/_authenticated/pos': typeof AuthenticatedPosRoute
   '/_authenticated/production': typeof AuthenticatedProductionRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
@@ -424,9 +439,7 @@ export interface FileRoutesById {
   '/_authenticated/sales': typeof AuthenticatedSalesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/students': typeof AuthenticatedStudentsRoute
-  '/_authenticated/tables': typeof AuthenticatedTablesRoute
   '/_authenticated/time-tracking': typeof AuthenticatedTimeTrackingRoute
-  '/_authenticated/wastage': typeof AuthenticatedWastageRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
 }
 export interface FileRouteTypes {
@@ -445,19 +458,22 @@ export interface FileRouteTypes {
     | '/disbursements'
     | '/dispensary'
     | '/donations'
+    | '/eatery-inventory'
+    | '/eatery-reports'
+    | '/eatery-sales'
     | '/expenses'
     | '/fees'
     | '/finished-goods'
     | '/housekeeping'
     | '/inventory'
     | '/invoices'
-    | '/kitchen'
     | '/members'
     | '/menu'
     | '/orders'
     | '/patients'
     | '/payments'
     | '/payroll'
+    | '/pharmacy-checkout'
     | '/pos'
     | '/production'
     | '/projects'
@@ -473,9 +489,7 @@ export interface FileRouteTypes {
     | '/sales'
     | '/settings'
     | '/students'
-    | '/tables'
     | '/time-tracking'
-    | '/wastage'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -490,19 +504,22 @@ export interface FileRouteTypes {
     | '/disbursements'
     | '/dispensary'
     | '/donations'
+    | '/eatery-inventory'
+    | '/eatery-reports'
+    | '/eatery-sales'
     | '/expenses'
     | '/fees'
     | '/finished-goods'
     | '/housekeeping'
     | '/inventory'
     | '/invoices'
-    | '/kitchen'
     | '/members'
     | '/menu'
     | '/orders'
     | '/patients'
     | '/payments'
     | '/payroll'
+    | '/pharmacy-checkout'
     | '/pos'
     | '/production'
     | '/projects'
@@ -518,9 +535,7 @@ export interface FileRouteTypes {
     | '/sales'
     | '/settings'
     | '/students'
-    | '/tables'
     | '/time-tracking'
-    | '/wastage'
     | '/'
   id:
     | '__root__'
@@ -537,19 +552,22 @@ export interface FileRouteTypes {
     | '/_authenticated/disbursements'
     | '/_authenticated/dispensary'
     | '/_authenticated/donations'
+    | '/_authenticated/eatery-inventory'
+    | '/_authenticated/eatery-reports'
+    | '/_authenticated/eatery-sales'
     | '/_authenticated/expenses'
     | '/_authenticated/fees'
     | '/_authenticated/finished-goods'
     | '/_authenticated/housekeeping'
     | '/_authenticated/inventory'
     | '/_authenticated/invoices'
-    | '/_authenticated/kitchen'
     | '/_authenticated/members'
     | '/_authenticated/menu'
     | '/_authenticated/orders'
     | '/_authenticated/patients'
     | '/_authenticated/payments'
     | '/_authenticated/payroll'
+    | '/_authenticated/pharmacy-checkout'
     | '/_authenticated/pos'
     | '/_authenticated/production'
     | '/_authenticated/projects'
@@ -565,9 +583,7 @@ export interface FileRouteTypes {
     | '/_authenticated/sales'
     | '/_authenticated/settings'
     | '/_authenticated/students'
-    | '/_authenticated/tables'
     | '/_authenticated/time-tracking'
-    | '/_authenticated/wastage'
     | '/_authenticated/'
   fileRoutesById: FileRoutesById
 }
@@ -677,6 +693,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDonationsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/eatery-inventory': {
+      id: '/_authenticated/eatery-inventory'
+      path: '/eatery-inventory'
+      fullPath: '/eatery-inventory'
+      preLoaderRoute: typeof AuthenticatedEateryInventoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/eatery-reports': {
+      id: '/_authenticated/eatery-reports'
+      path: '/eatery-reports'
+      fullPath: '/eatery-reports'
+      preLoaderRoute: typeof AuthenticatedEateryReportsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/eatery-sales': {
+      id: '/_authenticated/eatery-sales'
+      path: '/eatery-sales'
+      fullPath: '/eatery-sales'
+      preLoaderRoute: typeof AuthenticatedEaterySalesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/expenses': {
       id: '/_authenticated/expenses'
       path: '/expenses'
@@ -719,13 +756,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedInvoicesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/kitchen': {
-      id: '/_authenticated/kitchen'
-      path: '/kitchen'
-      fullPath: '/kitchen'
-      preLoaderRoute: typeof AuthenticatedKitchenRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/members': {
       id: '/_authenticated/members'
       path: '/members'
@@ -766,6 +796,13 @@ declare module '@tanstack/react-router' {
       path: '/payroll'
       fullPath: '/payroll'
       preLoaderRoute: typeof AuthenticatedPayrollRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/pharmacy-checkout': {
+      id: '/_authenticated/pharmacy-checkout'
+      path: '/pharmacy-checkout'
+      fullPath: '/pharmacy-checkout'
+      preLoaderRoute: typeof AuthenticatedPharmacyCheckoutRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/pos': {
@@ -873,25 +910,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/tables': {
-      id: '/_authenticated/tables'
-      path: '/tables'
-      fullPath: '/tables'
-      preLoaderRoute: typeof AuthenticatedTablesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/time-tracking': {
       id: '/_authenticated/time-tracking'
       path: '/time-tracking'
       fullPath: '/time-tracking'
       preLoaderRoute: typeof AuthenticatedTimeTrackingRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/wastage': {
-      id: '/_authenticated/wastage'
-      path: '/wastage'
-      fullPath: '/wastage'
-      preLoaderRoute: typeof AuthenticatedWastageRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
@@ -908,19 +931,22 @@ interface AuthenticatedRouteChildren {
   AuthenticatedDisbursementsRoute: typeof AuthenticatedDisbursementsRoute
   AuthenticatedDispensaryRoute: typeof AuthenticatedDispensaryRoute
   AuthenticatedDonationsRoute: typeof AuthenticatedDonationsRoute
+  AuthenticatedEateryInventoryRoute: typeof AuthenticatedEateryInventoryRoute
+  AuthenticatedEateryReportsRoute: typeof AuthenticatedEateryReportsRoute
+  AuthenticatedEaterySalesRoute: typeof AuthenticatedEaterySalesRoute
   AuthenticatedExpensesRoute: typeof AuthenticatedExpensesRoute
   AuthenticatedFeesRoute: typeof AuthenticatedFeesRoute
   AuthenticatedFinishedGoodsRoute: typeof AuthenticatedFinishedGoodsRoute
   AuthenticatedHousekeepingRoute: typeof AuthenticatedHousekeepingRoute
   AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
-  AuthenticatedKitchenRoute: typeof AuthenticatedKitchenRoute
   AuthenticatedMembersRoute: typeof AuthenticatedMembersRoute
   AuthenticatedMenuRoute: typeof AuthenticatedMenuRoute
   AuthenticatedOrdersRoute: typeof AuthenticatedOrdersRoute
   AuthenticatedPatientsRoute: typeof AuthenticatedPatientsRoute
   AuthenticatedPaymentsRoute: typeof AuthenticatedPaymentsRoute
   AuthenticatedPayrollRoute: typeof AuthenticatedPayrollRoute
+  AuthenticatedPharmacyCheckoutRoute: typeof AuthenticatedPharmacyCheckoutRoute
   AuthenticatedPosRoute: typeof AuthenticatedPosRoute
   AuthenticatedProductionRoute: typeof AuthenticatedProductionRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
@@ -936,9 +962,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSalesRoute: typeof AuthenticatedSalesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRoute
-  AuthenticatedTablesRoute: typeof AuthenticatedTablesRoute
   AuthenticatedTimeTrackingRoute: typeof AuthenticatedTimeTrackingRoute
-  AuthenticatedWastageRoute: typeof AuthenticatedWastageRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
 }
 
@@ -953,19 +977,22 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDisbursementsRoute: AuthenticatedDisbursementsRoute,
   AuthenticatedDispensaryRoute: AuthenticatedDispensaryRoute,
   AuthenticatedDonationsRoute: AuthenticatedDonationsRoute,
+  AuthenticatedEateryInventoryRoute: AuthenticatedEateryInventoryRoute,
+  AuthenticatedEateryReportsRoute: AuthenticatedEateryReportsRoute,
+  AuthenticatedEaterySalesRoute: AuthenticatedEaterySalesRoute,
   AuthenticatedExpensesRoute: AuthenticatedExpensesRoute,
   AuthenticatedFeesRoute: AuthenticatedFeesRoute,
   AuthenticatedFinishedGoodsRoute: AuthenticatedFinishedGoodsRoute,
   AuthenticatedHousekeepingRoute: AuthenticatedHousekeepingRoute,
   AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
-  AuthenticatedKitchenRoute: AuthenticatedKitchenRoute,
   AuthenticatedMembersRoute: AuthenticatedMembersRoute,
   AuthenticatedMenuRoute: AuthenticatedMenuRoute,
   AuthenticatedOrdersRoute: AuthenticatedOrdersRoute,
   AuthenticatedPatientsRoute: AuthenticatedPatientsRoute,
   AuthenticatedPaymentsRoute: AuthenticatedPaymentsRoute,
   AuthenticatedPayrollRoute: AuthenticatedPayrollRoute,
+  AuthenticatedPharmacyCheckoutRoute: AuthenticatedPharmacyCheckoutRoute,
   AuthenticatedPosRoute: AuthenticatedPosRoute,
   AuthenticatedProductionRoute: AuthenticatedProductionRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
@@ -981,9 +1008,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSalesRoute: AuthenticatedSalesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStudentsRoute: AuthenticatedStudentsRoute,
-  AuthenticatedTablesRoute: AuthenticatedTablesRoute,
   AuthenticatedTimeTrackingRoute: AuthenticatedTimeTrackingRoute,
-  AuthenticatedWastageRoute: AuthenticatedWastageRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
