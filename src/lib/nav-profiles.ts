@@ -49,6 +49,7 @@ export type NavItem = {
   label: string;
   icon: LucideIcon;
   priority?: number;
+  locked?: boolean;
 };
 
 export type NavGroup = {
@@ -62,9 +63,7 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
   retail: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
@@ -72,13 +71,13 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
         { to: "/pos", label: "Checkout / POS", icon: ScanLine, priority: 2 },
         { to: "/sales", label: "Sales", icon: ShoppingCart, priority: 3 },
         { to: "/inventory", label: "Inventory", icon: Boxes, priority: 4 },
-        { to: "/delivery", label: "Delivery", icon: Truck },
+        { to: "/delivery", label: "Delivery", icon: Truck, locked: true },
       ],
     },
     {
       group: "Money",
       items: [
-        { to: "/invoices", label: "Invoicing", icon: FileText },
+        { to: "/invoices", label: "Invoicing", icon: FileText, locked: true },
         { to: "/reports", label: "Reports", icon: BarChart3 },
       ],
     },
@@ -95,16 +94,14 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
   wholesale: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
       items: [
         { to: "/orders", label: "Orders", icon: ClipboardList, priority: 2 },
         { to: "/purchasing", label: "Purchasing", icon: PackageSearch, priority: 3 },
-        { to: "/delivery", label: "Delivery Routes", icon: Truck, priority: 4 },
+        { to: "/delivery", label: "Delivery Routes", icon: Truck, priority: 4, locked: true },
         { to: "/customers", label: "Customers", icon: Users },
         { to: "/inventory", label: "Inventory", icon: Boxes },
       ],
@@ -112,7 +109,7 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
     {
       group: "Money",
       items: [
-        { to: "/invoices", label: "Invoicing", icon: FileText },
+        { to: "/invoices", label: "Invoicing", icon: FileText, locked: true },
         { to: "/reports", label: "Reports", icon: BarChart3 },
       ],
     },
@@ -129,25 +126,20 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
   restaurant: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
       items: [
-        { to: "/tables", label: "Table Orders", icon: UtensilsCrossed, priority: 2 },
-        { to: "/kitchen", label: "Kitchen", icon: ChefHat, priority: 3 },
-        { to: "/menu", label: "Menu & Recipes", icon: FileText, priority: 4 },
-        { to: "/inventory", label: "Inventory", icon: Boxes },
-        { to: "/wastage", label: "Wastage", icon: Trash2 },
+        { to: "/menu", label: "Menu & Recipes", icon: FileText, priority: 2 },
+        { to: "/eatery-inventory", label: "Inventory", icon: Boxes, priority: 3 },
       ],
     },
     {
       group: "Money",
       items: [
-        { to: "/invoices", label: "Invoicing", icon: FileText },
-        { to: "/reports", label: "Reports", icon: BarChart3 },
+        { to: "/eatery-sales", label: "Sales", icon: ShoppingCart, priority: 4 },
+        { to: "/eatery-reports", label: "Reports", icon: BarChart3 },
       ],
     },
     {
@@ -163,31 +155,27 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
   pharmacy: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
       items: [
-        { to: "/dispensary", label: "Dispensary", icon: Pill, priority: 2 },
-        { to: "/patients", label: "Patient Billing", icon: UserRound, priority: 3 },
+        { to: "/pharmacy-checkout", label: "Checkout / POS", icon: ScanLine, priority: 2 },
+        { to: "/sales", label: "Sales", icon: ShoppingCart, priority: 3 },
         { to: "/inventory", label: "Inventory", icon: Boxes, priority: 4 },
-        { to: "/purchasing", label: "Purchasing", icon: PackageSearch },
+        { to: "/purchasing", label: "Purchasing", icon: PackageSearch, priority: 5 },
       ],
     },
     {
       group: "Money",
-      items: [
-        { to: "/reports", label: "Reports", icon: BarChart3 },
-      ],
+      items: [{ to: "/reports", label: "Reports", icon: BarChart3 }],
     },
     {
       group: "Organisation",
       items: [
         { to: "/branches", label: "Branches", icon: Building2 },
         { to: "/audit", label: "Audit trail", icon: ScrollText },
-        { to: "/settings", label: "Settings", icon: Settings, priority: 5 },
+        { to: "/settings", label: "Settings", icon: Settings, priority: 6 },
       ],
     },
   ],
@@ -195,40 +183,32 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
   school: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
       items: [
         { to: "/students", label: "Students", icon: GraduationCap, priority: 2 },
         { to: "/fees", label: "Fee Management", icon: Banknote, priority: 3 },
-        { to: "/payroll", label: "Payroll", icon: Users, priority: 4 },
       ],
     },
     {
       group: "Money",
       items: [
-        { to: "/expenses", label: "Expenses", icon: Wallet },
         { to: "/receipts", label: "Receipts", icon: Receipt },
         { to: "/reports", label: "Reports", icon: BarChart3 },
       ],
     },
     {
       group: "Organisation",
-      items: [
-        { to: "/settings", label: "Settings", icon: Settings, priority: 5 },
-      ],
+      items: [{ to: "/settings", label: "Settings", icon: Settings, priority: 5 }],
     },
   ],
 
   ngo: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
@@ -242,24 +222,19 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
       group: "Money",
       items: [
         { to: "/budget", label: "Budget & Approvals", icon: PiggyBank },
-        { to: "/expenses", label: "Expenses", icon: Wallet },
         { to: "/reports", label: "Reports", icon: BarChart3 },
       ],
     },
     {
       group: "Organisation",
-      items: [
-        { to: "/settings", label: "Settings", icon: Settings, priority: 5 },
-      ],
+      items: [{ to: "/settings", label: "Settings", icon: Settings, priority: 5 }],
     },
   ],
 
   salon: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
@@ -273,24 +248,20 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
     {
       group: "Money",
       items: [
-        { to: "/invoices", label: "Invoicing", icon: FileText },
+        { to: "/invoices", label: "Invoicing", icon: FileText, locked: true },
         { to: "/reports", label: "Reports", icon: BarChart3 },
       ],
     },
     {
       group: "Organisation",
-      items: [
-        { to: "/settings", label: "Settings", icon: Settings, priority: 5 },
-      ],
+      items: [{ to: "/settings", label: "Settings", icon: Settings, priority: 5 }],
     },
   ],
 
   hotel: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
@@ -321,9 +292,7 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
   professional_services: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
@@ -336,25 +305,21 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
     {
       group: "Money",
       items: [
-        { to: "/invoices", label: "Invoicing", icon: FileText },
+        { to: "/invoices", label: "Invoicing", icon: FileText, locked: true },
         { to: "/retainers", label: "Retainers", icon: FileStack },
         { to: "/reports", label: "Reports", icon: BarChart3 },
       ],
     },
     {
       group: "Organisation",
-      items: [
-        { to: "/settings", label: "Settings", icon: Settings, priority: 5 },
-      ],
+      items: [{ to: "/settings", label: "Settings", icon: Settings, priority: 5 }],
     },
   ],
 
   manufacturer: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
@@ -368,7 +333,7 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
     {
       group: "Money",
       items: [
-        { to: "/invoices", label: "Invoicing", icon: FileText },
+        { to: "/invoices", label: "Invoicing", icon: FileText, locked: true },
         { to: "/reports", label: "Reports", icon: BarChart3 },
       ],
     },
@@ -385,9 +350,7 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
   cooperative: [
     {
       group: "Overview",
-      items: [
-        { to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 },
-      ],
+      items: [{ to: "/", label: "Dashboard", icon: LayoutDashboard, priority: 1 }],
     },
     {
       group: "Operations",
@@ -406,9 +369,7 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
     },
     {
       group: "Organisation",
-      items: [
-        { to: "/settings", label: "Settings", icon: Settings, priority: 5 },
-      ],
+      items: [{ to: "/settings", label: "Settings", icon: Settings, priority: 5 }],
     },
   ],
 };
@@ -416,7 +377,7 @@ export const NAV_PROFILE_MAP: Record<InstitutionType, NavProfile> = {
 export function resolveNavProfile(type: InstitutionType | null | undefined): NavProfile {
   if (!type || !(type in NAV_PROFILE_MAP)) {
     console.warn(
-      `[Trite] resolveNavProfile: unknown institution type "${type}", returning empty profile.`
+      `[Trite] resolveNavProfile: unknown institution type "${type}", returning empty profile.`,
     );
     return [];
   }
